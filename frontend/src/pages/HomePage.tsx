@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
+import Logo from "@/components/Logo";
 
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
-      <header className="mb-8 text-center">
+      <header className="mb-8 flex flex-col items-center text-center">
+        <Logo size={80} className="mb-3" />
         <h1 className="text-3xl font-light text-accent">St. Anthony Adoration</h1>
         <p className="mt-1 text-muted">Chapel Registration &amp; Attendance</p>
       </header>
