@@ -105,6 +105,10 @@ Two things the deploy deliberately never touches:
 
 ## Step 4 — Run the Database Migrations
 
+> **Already done.** The staging database was migrated and seeded on 2026-09-02
+> via a temporary HTTP migration runner. The 6 tables and test data are live.
+> Skip to Step 5 unless you need to re-run migrations (e.g. after a DB reset).
+
 1. In cPanel, go to **phpMyAdmin**
 2. Select your database (`username_stanthony_adoration`) from the left sidebar
 3. Click the **SQL** tab
