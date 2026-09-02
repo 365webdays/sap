@@ -79,16 +79,13 @@ jobs:
             **/.git*/**
 
       - name: Verify health endpoint
-        # TEMPORARY: --resolve pins the domain to the GoDaddy IP so the health
-        # check works before DNS propagation completes. -k skips cert validation
-        # because AutoSSL cannot provision a cert for the staging subdomain
-        # until DNS resolves correctly. Once DNS propagates and AutoSSL runs,
-        # revert to: curl -fsS --max-time 20 "https://staging.stanthonyadoration.com/api/health"
+        # -k skips cert validation because the staging subdomain uses a
+        # self-signed cert (AutoSSL is not available on this hosting plan).
+        # Safe to remove once a real cert is installed.
         run: |
           set -euo pipefail
           for i in 1 2 3 4 5; do
             body=$(curl -fsS -k --max-time 20 \
-              --resolve staging.stanthonyadoration.com:443:107.180.114.51 \
               "https://staging.stanthonyadoration.com/api/health" || true)
             echo "attempt $i: $body"
             if echo "$body" | grep -q '"database":true'; then
