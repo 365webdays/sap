@@ -66,12 +66,6 @@ $router = new Router();
 // --- Health check ---
 $router->get('/health', require __DIR__ . '/handlers/health.php');
 
-// TEMPORARY diagnostic — remove before go-live
-$router->get('/diag', require __DIR__ . '/handlers/diag.php');
-
-// TEMPORARY migration runner — remove before go-live
-$router->get('/migrate', require __DIR__ . '/handlers/migrate.php');
-
 // --- Public reference data ---
 $router->get('/schedule/options', require __DIR__ . '/handlers/schedule_options.php');
 
