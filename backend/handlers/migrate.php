@@ -104,33 +104,43 @@ SQL
         ,
     ];
 
-    // Seed data — only insert if the tables are empty.
-    $seed = <<<SQL
-INSERT IGNORE INTO admins (name, email, password_hash) VALUES
+    // Seed data — clear existing rows first (previous run may have inserted
+    // mangled bcrypt hashes due to heredoc $-interpolation), then re-insert.
+    // Nowdoc (<<<'SQL') prevents PHP from interpolating $ in bcrypt hashes.
+    $seed = <<<'SQL'
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE attendance_logs;
+TRUNCATE TABLE email_preferences;
+TRUNCATE TABLE adoration_schedules;
+TRUNCATE TABLE users;
+TRUNCATE TABLE admins;
+SET FOREIGN_KEY_CHECKS = 1;
+
+INSERT INTO admins (name, email, password_hash) VALUES
   ('Test Admin', 'admin@stanthonyadoration.com', '$2y$10$W.RtQTZajXIcYy7x2uTDceMQFqBl3SaUZeEtjfS16a1QJ/4GscE62');
 
-INSERT IGNORE INTO users (full_name, email, mobile_number, password_hash, email_verified_at, privacy_consent, is_active) VALUES
+INSERT INTO users (full_name, email, mobile_number, password_hash, email_verified_at, privacy_consent, is_active) VALUES
   ('Test User One',   'test1@stanthonyadoration.com', '555-0001', '$2y$10$VYurhR2N8RxyKNzPoj.Z.uWXSpsXC7GYvU632ojlQjID666k9cAga', NOW(), TRUE, TRUE),
   ('Test User Two',   'test2@stanthonyadoration.com', '555-0002', '$2y$10$VYurhR2N8RxyKNzPoj.Z.uWXSpsXC7GYvU632ojlQjID666k9cAga', NOW(), TRUE, TRUE),
   ('Test User Three', 'test3@stanthonyadoration.com', '555-0003', '$2y$10$VYurhR2N8RxyKNzPoj.Z.uWXSpsXC7GYvU632ojlQjID666k9cAga', NOW(), TRUE, TRUE),
   ('Test User Four',  'test4@stanthonyadoration.com', '555-0004', '$2y$10$VYurhR2N8RxyKNzPoj.Z.uWXSpsXC7GYvU632ojlQjID666k9cAga', NOW(), TRUE, FALSE),
   ('Test User Five',  'test5@stanthonyadoration.com', '555-0005', '$2y$10$VYurhR2N8RxyKNzPoj.Z.uWXSpsXC7GYvU632ojlQjID666k9cAga', NOW(), TRUE, TRUE);
 
-INSERT IGNORE INTO adoration_schedules (user_id, day_of_week, time_slot) VALUES
+INSERT INTO adoration_schedules (user_id, day_of_week, time_slot) VALUES
   (1, 'Monday',    '08:00:00'),
   (2, 'Monday',    '09:00:00'),
   (3, 'Tuesday',   '14:00:00'),
   (4, 'Wednesday', '19:00:00'),
   (5, 'Friday',    '06:00:00');
 
-INSERT IGNORE INTO email_preferences (user_id, hour_reminders, announcements, attendance_notifications) VALUES
+INSERT INTO email_preferences (user_id, hour_reminders, announcements, attendance_notifications) VALUES
   (1, TRUE, TRUE, TRUE),
   (2, TRUE, TRUE, TRUE),
   (3, TRUE, FALSE, TRUE),
   (4, FALSE, TRUE, FALSE),
   (5, TRUE, TRUE, TRUE);
 
-INSERT IGNORE INTO attendance_logs (user_id, schedule_id, check_in_at, method) VALUES
+INSERT INTO attendance_logs (user_id, schedule_id, check_in_at, method) VALUES
   (1, 1, '2026-08-25 08:05:00', 'manual'),
   (2, 2, '2026-08-25 09:12:00', 'qr'),
   (3, 3, '2026-08-26 14:03:00', 'manual'),
