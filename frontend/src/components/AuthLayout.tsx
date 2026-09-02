@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Logo from "@/components/Logo";
 
 /**
  * Centered single-card layout used by the auth pages. Renders the parish
@@ -15,7 +16,8 @@ export default function AuthLayout({
 }) {
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-8">
-      <header className="mb-6 text-center">
+      <header className="mb-6 flex flex-col items-center text-center">
+        <Logo size={72} className="mb-3" />
         <h1 className="text-2xl font-light text-accent">St. Anthony Adoration</h1>
         <p className="mt-1 text-sm text-muted">Chapel Registration &amp; Attendance</p>
       </header>

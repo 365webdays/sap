@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import Logo from "@/components/Logo";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AdorerDashboard() {
@@ -15,11 +16,14 @@ export default function AdorerDashboard() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       <header className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-light text-accent">St. Anthony Adoration</h1>
-          <p className="mt-1 text-sm text-muted">
-            Welcome, {adorer?.full_name ?? "adorer"}.
-          </p>
+        <div className="flex items-center gap-3">
+          <Logo size={48} />
+          <div>
+            <h1 className="text-2xl font-light text-accent">St. Anthony Adoration</h1>
+            <p className="mt-1 text-sm text-muted">
+              Welcome, {adorer?.full_name ?? "adorer"}.
+            </p>
+          </div>
         </div>
         <Button variant="outline" size="sm" onClick={handleLogout}>
           Sign out
