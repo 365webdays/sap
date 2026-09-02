@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  /* St. Anthony of Padua parish palette */
+  --color-accent: #679b08;
+  --color-accent-foreground: #ffffff;
+  --color-accent-dark: #4d7306;
+
+  --color-bg: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-text: #2d2d2d;
+  --color-muted: #6b6375;
+  --color-border: #e5e4e7;
+
+  --font-sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, Consolas, monospace;
+}
+
+@layer base {
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}

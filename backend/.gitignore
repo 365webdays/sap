@@ -1,0 +1,6 @@
+# Environment file with real credentials — never commit
+.env
+
+# Local development artifacts
+*.log
+.DS_Store
