@@ -1,2 +1,17 @@
 .vscode/sftp.json
+
+# Ignore all markdown files by default, except project docs.
+# Note: a negation cannot re-include a file inside an ignored directory,
+# so docs/ needs an explicit glob rather than just `!docs/`.
 *.md
+!README.md
+!backend/migrations/README.md
+!docs/**/*.md
+
+# Environment files with real credentials
+.env
+.env.*
+!**/.env.example
+
+# OS files
+.DS_Store

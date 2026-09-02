@@ -1,0 +1,18 @@
+# SPA fallback for React Router.
+# Copied verbatim into dist/ by Vite and deployed to the site root.
+RewriteEngine On
+
+# Redirect HTTP to HTTPS (enforced sitewide per Phase 8)
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Leave the API alone — it has its own front controller and .htaccess
+RewriteRule ^api(/|$) - [L]
+
+# Serve real files and directories as-is (assets, favicon, manifest, ...)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Everything else is a client-side route
+RewriteRule ^ index.html [L]
