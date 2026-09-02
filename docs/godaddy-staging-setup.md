@@ -166,6 +166,54 @@ Two things the deploy deliberately never touches:
 
 ## Troubleshooting
 
+### Testing before DNS propagates
+
+The domain must resolve to the cPanel hosting IP (`107.180.114.51`) for anything
+to work. While DNS is still propagating you can bypass it entirely with curl's
+`--resolve`, which pins a hostname to a specific IP for that one request:
+
+```bash
+curl -k --resolve staging.stanthonyadoration.com:443:107.180.114.51 \
+  https://staging.stanthonyadoration.com/api/health
+```
+
+`-k` is needed because AutoSSL cannot issue a certificate for a hostname that
+does not yet resolve to the server, so the presented cert will not match.
+
+Note this only helps command-line testing. A browser uses system DNS, so the
+app is not reachable in a browser until the real records are correct.
+
+### Parked "stanthonyadoration.com" page instead of the app
+
+If the site shows a GoDaddy placeholder page (title `stanthonyadoration.com`),
+DNS is pointing at GoDaddy's **domain parking / forwarding** service rather than
+at the hosting account. Those records resolve to AWS Global Accelerator IPs
+(e.g. `13.248.243.5`, `15.197.225.128`), which is how you can tell:
+
+```bash
+dig +short stanthonyadoration.com @1.1.1.1   # want 107.180.114.51
+dig +short -x <returned-ip> @1.1.1.1         # *.awsglobalaccelerator.com = parked
+```
+
+Fix it in **DNS Management**: point the `@` A record — and a `staging` A record —
+at `107.180.114.51`, and delete any domain forwarding rule for `staging`.
+
+Domain forwarding is not a substitute for a subdomain. It only issues an HTTP
+redirect, so it creates no Apache VirtualHost, no document root, and no TLS
+certificate.
+
+### Do not serve staging from a subdirectory
+
+Redirecting `staging.stanthonyadoration.com` to `stanthonyadoration.com/staging`
+appears to work — the API responds, because the router derives its mount point
+from `SCRIPT_NAME` — but the React app breaks. Vite builds absolute asset paths
+(`/assets/index-*.js`), which resolve against the domain root and 404 under a
+subdirectory, leaving a blank page.
+
+Use a real subdomain whose document root is `staging`. That serves the app at
+its own root, so the absolute paths are correct and staging matches production
+exactly.
+
 ### "Not found" (404) when visiting /api/health
 - Ensure `.htaccess` was uploaded to `public_html/staging/`
 - In cPanel → **MultiPHP Manager**, confirm `AllowOverride` is enabled (it should be by default)
