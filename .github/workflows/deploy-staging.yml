@@ -1,0 +1,95 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          VITE_API_BASE_URL: https://staging.stanthonyadoration.com/api
+        run: npm run build
+
+      - name: Assemble deploy directory
+        run: |
+          set -euo pipefail
+
+          # Frontend build output lands at the site root
+          mkdir -p deploy
+          cp -R frontend/dist/. deploy/
+
+          # PHP API is mounted at /api
+          mkdir -p deploy/api
+          cp -R backend/. deploy/api/
+
+          # Never ship migrations, env files, or VCS metadata.
+          # .env.example is repo documentation and would not be blocked by
+          # the API .htaccess (it does not end in .env), so drop it too.
+          rm -rf deploy/api/migrations
+          rm -f  deploy/api/.gitignore
+          rm -f  deploy/api/.env
+          rm -f  deploy/api/.env.example
+
+          echo "--- deploy tree ---"
+          find deploy -type f | sort
+
+      - name: Deploy to staging over FTPS
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./deploy/
+          server-dir: ./public_html/staging/
+          # The server's .env holds real credentials and lives only on the host.
+          # Excluding it keeps the sync from uploading or deleting it.
+          exclude: |
+            **/.env
+            **/.git*
+            **/.git*/**
+
+      - name: Verify health endpoint
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            body=$(curl -fsS --max-time 20 \
+              "https://staging.stanthonyadoration.com/api/health" || true)
+            echo "attempt $i: $body"
+            if echo "$body" | grep -q '"database":true'; then
+              echo "Health check passed."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Health check did not report a healthy database." >&2
+          exit 1
