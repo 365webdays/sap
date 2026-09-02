@@ -1,4 +1,6 @@
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
 
 export default function HomePage() {
   return (
@@ -10,16 +12,34 @@ export default function HomePage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Setup Complete</CardTitle>
-          <CardDescription>Phase 1–2 scaffolding is in place.</CardDescription>
+          <CardTitle>Perpetual Adoration Chapel</CardTitle>
+          <CardDescription>
+            Commit to a weekly holy hour before the Blessed Sacrament.
+          </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <p className="text-sm text-muted">
-            The frontend is running. Authentication, adorer features, and the admin
-            panel will be built in subsequent phases.
+            St. Anthony of Padua Parish invites you to spend one hour each week
+            in prayer before our Lord in the Eucharist. Register below to claim
+            your hour and join our community of adorers.
           </p>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Link to="/register" className={buttonVariants({ variant: "default" })}>
+              Register as an adorer
+            </Link>
+            <Link to="/login" className={buttonVariants({ variant: "outline" })}>
+              Sign in
+            </Link>
+          </div>
         </CardContent>
       </Card>
+
+      <p className="mt-6 text-center text-sm text-muted">
+        Parish staff?{" "}
+        <Link to="/admin/login" className="font-medium text-accent hover:underline">
+          Administrator sign in
+        </Link>
+      </p>
     </div>
   );
 }
