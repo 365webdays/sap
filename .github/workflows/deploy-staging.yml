@@ -24,13 +24,31 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install dependencies
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: none
+
+      - name: Install frontend dependencies
         working-directory: frontend
         run: npm ci
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+
+      - name: Audit backend dependencies
+        working-directory: backend
+        run: composer audit --no-dev
 
       - name: Lint
         working-directory: frontend
         run: npm run lint
+
+      - name: Check PHP syntax
+        run: find backend -name '*.php' -not -path 'backend/vendor/*' -print0 | xargs -0 -n1 php -l
 
       - name: Build frontend
         working-directory: frontend
@@ -46,7 +64,7 @@ jobs:
           mkdir -p deploy
           cp -R frontend/dist/. deploy/
 
-          # PHP API is mounted at /api
+          # PHP API is mounted at /api (includes vendor/ from composer install)
           mkdir -p deploy/api
           cp -R backend/. deploy/api/
 
@@ -58,8 +76,13 @@ jobs:
           rm -f  deploy/api/.env
           rm -f  deploy/api/.env.example
 
-          echo "--- deploy tree ---"
-          find deploy -type f | sort
+          # Dependency manifests are build inputs, not runtime files.
+          rm -f  deploy/api/composer.json
+          rm -f  deploy/api/composer.lock
+
+          echo "--- deploy tree (excluding vendor) ---"
+          find deploy -type f -not -path 'deploy/api/vendor/*' | sort
+          echo "--- vendor file count: $(find deploy/api/vendor -type f | wc -l) ---"
 
       - name: Deploy to staging over FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0

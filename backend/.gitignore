@@ -1,6 +1,10 @@
 # Environment file with real credentials — never commit
 .env
 
+# Composer dependencies are installed by CI and shipped in the deploy
+# artifact; composer.lock is committed so builds are reproducible.
+/vendor/
+
 # Local development artifacts
 *.log
 .DS_Store

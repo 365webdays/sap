@@ -8,10 +8,39 @@
 require_once __DIR__ . '/config/env.php';
 load_env(__DIR__ . '/.env');
 
+// Composer dependencies (firebase/php-jwt, phpmailer). Installed by CI and
+// shipped with the deploy, so a missing vendor/ means a broken deployment.
+$autoload = __DIR__ . '/vendor/autoload.php';
+if (!is_file($autoload)) {
+    http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode([
+        'success' => false,
+        'error' => 'Server dependencies are missing',
+    ]);
+    exit;
+}
+require_once $autoload;
+
 // Core libraries
 require_once __DIR__ . '/lib/Database.php';
 require_once __DIR__ . '/lib/Response.php';
 require_once __DIR__ . '/lib/Router.php';
+require_once __DIR__ . '/lib/Validator.php';
+require_once __DIR__ . '/lib/Token.php';
+require_once __DIR__ . '/lib/Auth.php';
+require_once __DIR__ . '/lib/Schedule.php';
+require_once __DIR__ . '/lib/Mailer.php';
+require_once __DIR__ . '/lib/EmailTemplate.php';
+
+// Never leak stack traces or SQL to the client; handlers return JSON errors.
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+
+set_exception_handler(function (Throwable $e): void {
+    error_log('Unhandled: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
+    Response::error('An unexpected error occurred', 500);
+});
 
 // CORS headers — allow staging, production, and localhost origins
 $allowedOrigins = [
@@ -37,8 +66,22 @@ $router = new Router();
 // --- Health check ---
 $router->get('/health', require __DIR__ . '/handlers/health.php');
 
+// --- Public reference data ---
+$router->get('/schedule/options', require __DIR__ . '/handlers/schedule_options.php');
+
+// --- Adorer auth ---
+$router->post('/auth/register', require __DIR__ . '/handlers/auth/register.php');
+$router->post('/auth/login', require __DIR__ . '/handlers/auth/login.php');
+$router->get('/auth/me', require __DIR__ . '/handlers/auth/me.php');
+
+// --- Admin auth ---
+$router->post('/admin/login', require __DIR__ . '/handlers/admin/login.php');
+$router->get('/admin/me', require __DIR__ . '/handlers/admin/me.php');
+
+// Logout is client-side only: the token is discarded by the browser. There is
+// no server-side session to clear, and tokens are short-lived.
+
 // Future routes will be registered here as features are built:
-//   Auth:        /auth/register, /auth/login, /admin/login
 //   Adorer:      /adorer/dashboard, /adorer/checkin, /adorer/preferences
 //   Admin:       /admin/dashboard, /admin/adorers, /admin/attendance, ...
 
