@@ -113,9 +113,6 @@ $router->post('/admin/email/preview', require __DIR__ . '/handlers/admin/email_p
 $router->post('/admin/email/send', require __DIR__ . '/handlers/admin/email_send.php');
 $router->get('/admin/email/history', require __DIR__ . '/handlers/admin/email_history.php');
 
-// TEMPORARY migration runner — removed after each use.
-$router->post('/migrate', require __DIR__ . '/handlers/migrate.php');
-
 // Future routes will be registered here as features are built:
 //   Phase 6:    /cron/...
 
