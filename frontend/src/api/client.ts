@@ -14,6 +14,11 @@ export interface ApiError {
   error: string;
   /** Present on 422 validation failures: field name => message. */
   fields?: Record<string, string>;
+  /**
+   * Some failures ship context alongside the message — e.g. a 409 duplicate
+   * check-in returns when the earlier check-in happened.
+   */
+  data?: unknown;
 }
 export type ApiResponse<T> = ApiSuccess<T> | ApiError;
 
@@ -24,12 +29,15 @@ export interface FieldErrors {
 export class ApiRequestError extends Error {
   public readonly status: number;
   public readonly fields: FieldErrors;
+  /** Extra context returned with the failure, when the endpoint provides it. */
+  public readonly data: unknown;
 
-  constructor(message: string, status: number, fields: FieldErrors = {}) {
+  constructor(message: string, status: number, fields: FieldErrors = {}, data: unknown = null) {
     super(message);
     this.name = "ApiRequestError";
     this.status = status;
     this.fields = fields;
+    this.data = data;
   }
 }
 
@@ -93,7 +101,7 @@ export async function request<T>(config: Parameters<typeof api.request>[0]): Pro
     const status = axiosErr.response?.status ?? 0;
     const message = body?.error ?? axiosErr.message ?? "Request failed";
     const fields = body?.fields ?? {};
-    throw new ApiRequestError(message, status, fields);
+    throw new ApiRequestError(message, status, fields, body?.data ?? null);
   }
 }
 

@@ -6,6 +6,9 @@ import RegisterPage from "@/pages/RegisterPage";
 import LoginPage from "@/pages/LoginPage";
 import AdminLoginPage from "@/pages/AdminLoginPage";
 import AdorerDashboard from "@/pages/AdorerDashboard";
+import AttendancePage from "@/pages/AttendancePage";
+import PreferencesPage from "@/pages/PreferencesPage";
+import CheckinPage from "@/pages/CheckinPage";
 import AdminDashboard from "@/pages/AdminDashboard";
 
 /**
@@ -45,6 +48,31 @@ function AppRoutes() {
         element={
           <ProtectedRoute role="adorer">
             <AdorerDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/attendance"
+        element={
+          <ProtectedRoute role="adorer">
+            <AttendancePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/preferences"
+        element={
+          <ProtectedRoute role="adorer">
+            <PreferencesPage />
+          </ProtectedRoute>
+        }
+      />
+      {/* QR landing. Anonymous scans are sent to /login and returned here. */}
+      <Route
+        path="/checkin"
+        element={
+          <ProtectedRoute role="adorer">
+            <CheckinPage />
           </ProtectedRoute>
         }
       />
