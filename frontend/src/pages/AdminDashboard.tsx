@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Logo from "@/components/Logo";
+import CheckinQrCode from "@/components/CheckinQrCode";
 import { useAuth } from "@/context/AuthContext";
 
 export default function AdminDashboard() {
@@ -42,6 +43,19 @@ export default function AdminDashboard() {
             The adorer roster, attendance reports, and email tools will be built
             here in subsequent phases.
           </p>
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle>Chapel Check-In QR Code</CardTitle>
+          <CardDescription>
+            Print and post this at the chapel entrance. Adorers scan it with any
+            phone camera to check in.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CheckinQrCode />
         </CardContent>
       </Card>
     </div>

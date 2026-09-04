@@ -30,8 +30,14 @@ require_once __DIR__ . '/lib/Validator.php';
 require_once __DIR__ . '/lib/Token.php';
 require_once __DIR__ . '/lib/Auth.php';
 require_once __DIR__ . '/lib/Schedule.php';
+require_once __DIR__ . '/lib/Attendance.php';
+require_once __DIR__ . '/lib/Preferences.php';
 require_once __DIR__ . '/lib/Mailer.php';
 require_once __DIR__ . '/lib/EmailTemplate.php';
+
+// All date logic (check-in day/hour matching, reminders) must run in parish
+// local time, not the server's UTC. Set this before anything touches dates.
+date_default_timezone_set(env('APP_TIMEZONE', 'America/Vancouver'));
 
 // Never leak stack traces or SQL to the client; handlers return JSON errors.
 ini_set('display_errors', '0');
@@ -81,8 +87,14 @@ $router->get('/admin/me', require __DIR__ . '/handlers/admin/me.php');
 // Logout is client-side only: the token is discarded by the browser. There is
 // no server-side session to clear, and tokens are short-lived.
 
+// --- Adorer features ---
+$router->get('/adorer/dashboard', require __DIR__ . '/handlers/adorer/dashboard.php');
+$router->post('/adorer/checkin', require __DIR__ . '/handlers/adorer/checkin.php');
+$router->get('/adorer/attendance', require __DIR__ . '/handlers/adorer/attendance.php');
+$router->get('/adorer/preferences', require __DIR__ . '/handlers/adorer/preferences_get.php');
+$router->put('/adorer/preferences', require __DIR__ . '/handlers/adorer/preferences_update.php');
+
 // Future routes will be registered here as features are built:
-//   Adorer:      /adorer/dashboard, /adorer/checkin, /adorer/preferences
 //   Admin:       /admin/dashboard, /admin/adorers, /admin/attendance, ...
 
 $router->dispatch();

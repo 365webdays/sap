@@ -158,6 +158,25 @@ class Validator
         return $value;
     }
 
+    /**
+     * Toggle that may be either on or off (unlike accepted(), which requires
+     * true). Accepts real booleans plus the common JSON/form spellings.
+     */
+    public function boolean(string $field, string $label): ?bool
+    {
+        $value = $this->raw($field);
+
+        if ($value === true || $value === 1 || $value === '1' || $value === 'true') {
+            return true;
+        }
+        if ($value === false || $value === 0 || $value === '0' || $value === 'false') {
+            return false;
+        }
+
+        $this->fail($field, "{$label} must be true or false");
+        return null;
+    }
+
     /** Checkbox that must be affirmatively true (e.g. privacy consent). */
     public function accepted(string $field, string $label): bool
     {
