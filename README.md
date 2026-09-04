@@ -5,7 +5,9 @@ A Progressive Web App for managing Adoration Chapel registration and attendance 
 ## Tech Stack
 
 - **Frontend:** React + Vite + TypeScript + Tailwind CSS v4 + shadcn/ui components
-- **Backend:** PHP + MySQL (zero Composer dependencies, works on GoDaddy shared hosting)
+- **Backend:** PHP + MySQL (PDO). Composer deps (PHPMailer, firebase/php-jwt)
+  are installed in CI and shipped in the deploy artifact, so the shared host
+  never needs Composer itself.
 - **Hosting:** GoDaddy (staging at `staging.stanthonyadoration.com`)
 
 ## Project Structure
@@ -15,14 +17,14 @@ sap/
 ├── frontend/          # React + Vite + Tailwind + shadcn/ui
 │   ├── src/
 │   │   ├── api/       # Axios API client
-│   │   ├── components/ui/  # shadcn/ui components (button, input, label, card)
+│   │   ├── components/ui/  # shadcn/ui primitives (button, input, card, switch, ...)
 │   │   ├── lib/       # Utilities (cn helper)
 │   │   ├── pages/     # Route pages
 │   │   ├── App.tsx    # Router setup
 │   │   └── index.css  # Tailwind + theme tokens
 │   ├── .env           # Local dev API URL
 │   └── .env.staging   # Staging API URL
-├── backend/           # PHP API (zero Composer deps), deployed to /api
+├── backend/           # PHP API, deployed to /api
 │   ├── handlers/      # Endpoint handlers
 │   ├── lib/           # Database, Response, Router
 │   ├── config/        # Env loader
@@ -88,3 +90,37 @@ At go-live, change `server-dir` from `./public_html/staging/` to
 `./public_html/` and update `VITE_API_BASE_URL` — no code changes needed.
 
 See `docs/godaddy-staging-setup.md` for first-time server setup.
+
+## API Endpoints
+
+All paths are relative to `/api`. Responses follow
+`{ "success": true, "data": ... }` or `{ "success": false, "error": ... }`.
+Authenticated routes expect `Authorization: Bearer <token>`; adorer and admin
+tokens are not interchangeable.
+
+| Method | Path | Auth | Purpose |
+|--------|------|------|---------|
+| GET | `/health` | — | Service and database status |
+| GET | `/schedule/options` | — | Selectable days and hourly slots |
+| POST | `/auth/register` | — | Create an adorer account |
+| POST | `/auth/login` | — | Adorer sign in |
+| GET | `/auth/me` | adorer | Validate token, return adorer |
+| POST | `/admin/login` | — | Administrator sign in |
+| GET | `/admin/me` | admin | Validate token, return administrator |
+| GET | `/adorer/dashboard` | adorer | Hours, last check-in, history, totals |
+| POST | `/adorer/checkin` | adorer | Record a check-in (`manual` or `qr`) |
+| GET | `/adorer/attendance` | adorer | Paginated history (`page`, `per_page`) |
+| GET | `/adorer/preferences` | adorer | Read notification toggles |
+| PUT | `/adorer/preferences` | adorer | Replace notification toggles |
+
+### Check-in behaviour
+
+- A repeat check-in inside `CHECKIN_WINDOW_MINUTES` (default 60) returns
+  **409** with the earlier check-in time rather than creating a duplicate.
+- A check-in is linked to an `adoration_schedules` row only when it falls
+  inside that scheduled hour. Visits outside it are stored with a null
+  `schedule_id`, which keeps off-schedule visits distinguishable and lets
+  missed-hour reporting stay accurate.
+- Timestamps are written from PHP in `APP_TIMEZONE` (default
+  `America/Vancouver`). The database server runs UTC, and the day/hour
+  matching above is only correct in parish local time.
