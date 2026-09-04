@@ -227,15 +227,15 @@ All jobs run as PHP cron scripts called from GoDaddy cPanel cron scheduler.
 ## Phase 7 — PWA Configuration
 
 ### 7.1 Core PWA Setup
-- [ ] Add `manifest.json`: app name "St. Anthony Adoration," icons (192px, 512px), theme color, `display: standalone`
-- [ ] Register a Service Worker for offline shell caching
-- [ ] App loads and shows a meaningful screen even with no internet connection
+- [x] Add `manifest.json`: app name "St. Anthony Adoration," icons (192px, 512px), theme color, `display: standalone`
+- [x] Register a Service Worker for offline shell caching
+- [x] App loads and shows a meaningful screen even with no internet connection
 
 ### 7.2 "Add to Home Screen" Button (Pseudo-App Install)
 The install experience differs by platform.
 
-- [ ] **Detect install state:** on load, check `window.matchMedia('(display-mode: standalone)').matches` and iOS `navigator.standalone`; if already installed, hide the prompt entirely
-- [ ] **Android (Chrome / Edge / Samsung Internet):** capture the `beforeinstallprompt` event and show a custom "Add to Home Screen" button; on click, call `deferredPrompt.prompt()` and handle the user's choice — one-tap native install
+- [x] **Detect install state:** on load, check `window.matchMedia('(display-mode: standalone)').matches` and iOS `navigator.standalone`; if already installed, hide the prompt entirely
+- [x] **Android (Chrome / Edge / Samsung Internet):** capture the `beforeinstallprompt` event and show a custom "Add to Home Screen" button; on click, call `deferredPrompt.prompt()` and handle the user's choice — one-tap native install
   ```js
   let deferredPrompt;
 
@@ -253,9 +253,9 @@ The install experience differs by platform.
     hideInstallButton();
   });
   ```
-- [ ] **iPhone (iOS Safari):** Apple does not support `beforeinstallprompt` — there is no programmatic one-tap install on iOS. Detect iOS Safari via user agent and show a short instructional modal: "Tap the Share icon (□↑), then tap 'Add to Home Screen'" with an icon illustration
-- [ ] **Dismiss-and-remember:** if the user dismisses the prompt or instructions, store the dismissal in `localStorage` and don't show again for 7 days
-- [ ] Place the install prompt on the login/registration page and in account settings so it's easy to find
+- [x] **iPhone (iOS Safari):** Apple does not support `beforeinstallprompt` — there is no programmatic one-tap install on iOS. Detect iOS Safari via user agent and show a short instructional modal: "Tap the Share icon (□↑), then tap 'Add to Home Screen'" with an icon illustration
+- [x] **Dismiss-and-remember:** if the user dismisses the prompt or instructions, store the dismissal in `localStorage` and don't show again for 7 days
+- [x] Place the install prompt on the login/registration page and in account settings so it's easy to find
 
 **Summary:**
 - Android: ✅ True one-tap install

@@ -13,6 +13,7 @@ import { useAuth } from "@/context/AuthContext";
 import { authApi, type ScheduleOptions } from "@/api/auth";
 import { ApiRequestError } from "@/api/client";
 import { DAYS, TIME_SLOTS, slotLabel } from "@/lib/schedule";
+import InstallPrompt from "@/components/InstallPrompt";
 
 interface FormState {
   full_name: string;
@@ -237,6 +238,10 @@ export default function RegisterPage() {
           </p>
         </form>
       </Card>
+
+      <div className="mt-4">
+        <InstallPrompt />
+      </div>
     </AuthLayout>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import AdorerLayout from "@/components/AdorerLayout";
+import InstallPrompt from "@/components/InstallPrompt";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -133,6 +134,18 @@ export default function PreferencesPage() {
               </Button>
             </>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle>Install App</CardTitle>
+          <CardDescription>
+            Add St. Anthony Adoration to your home screen for quick access.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <InstallPrompt force />
         </CardContent>
       </Card>
     </AdorerLayout>

@@ -30,7 +30,7 @@ export default function AdorerLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen pb-20 sm:pb-0">
+    <div className="min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
       <header className="border-b border-border bg-surface">
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
           <Link to="/dashboard" className="flex items-center gap-3">
@@ -82,7 +82,7 @@ export default function AdorerLayout({ children }: { children: ReactNode }) {
       {/* Bottom tab bar — mobile only */}
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 border-t border-border bg-surface sm:hidden"
+        className="fixed inset-x-0 bottom-0 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] sm:hidden"
       >
         <div className="mx-auto flex max-w-3xl">
           {NAV.map(({ to, label, Icon }) => (

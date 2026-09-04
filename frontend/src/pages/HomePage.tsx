@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
+import InstallPrompt from "@/components/InstallPrompt";
 import Logo from "@/components/Logo";
 
 export default function HomePage() {
@@ -35,6 +36,10 @@ export default function HomePage() {
           </div>
         </CardContent>
       </Card>
+
+      <div className="mt-6">
+        <InstallPrompt />
+      </div>
 
       <p className="mt-6 text-center text-sm text-muted">
         Parish staff?{" "}
