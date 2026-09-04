@@ -112,6 +112,18 @@ tokens are not interchangeable.
 | GET | `/adorer/attendance` | adorer | Paginated history (`page`, `per_page`) |
 | GET | `/adorer/preferences` | adorer | Read notification toggles |
 | PUT | `/adorer/preferences` | adorer | Replace notification toggles |
+| GET | `/admin/stats` | admin | Dashboard overview, trend, peak heatmap |
+| GET | `/admin/adorers` | admin | Paginated, searchable adorer roster |
+| GET | `/admin/adorer?id=` | admin | One adorer's full profile |
+| PUT | `/admin/adorer` | admin | Edit adorer details and schedules |
+| GET | `/admin/attendance` | admin | All check-ins, filtered and paginated |
+| GET | `/admin/missed` | admin | Missed-hour report (derived, not stored) |
+| POST | `/admin/missed/followup` | admin | Mark/clear a missed-hour follow-up |
+| GET | `/admin/coverage` | admin | Day/hour grid with gaps highlighted |
+| GET | `/admin/export?type=` | admin | CSV export (attendance, adorers, missed) |
+| POST | `/admin/email/preview` | admin | Preview recipient count for a group |
+| POST | `/admin/email/send` | admin | Send bulk announcement |
+| GET | `/admin/email/history` | admin | Paginated log of past announcements |
 
 ### Check-in behaviour
 
