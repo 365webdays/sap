@@ -168,6 +168,109 @@ Two things the deploy deliberately never touches:
 
 ---
 
+## Step 8 — Configure SMTP (required for Phase 6)
+
+Before the cron emails can send, the SMTP mailbox must be set up and the `.env`
+populated with real credentials.
+
+1. In cPanel, go to **Email Accounts** and create a mailbox, e.g.
+   `noreply@stanthonyadoration.com`
+2. Note the password you set
+3. Find the SMTP server name — on GoDaddy shared hosting it's typically
+   `smtpout.secureserver.net`
+4. Edit `public_html/staging/api/.env` and fill in the SMTP block:
+   ```
+   SMTP_HOST=smtpout.secureserver.net
+   SMTP_USER=noreply@stanthonyadoration.com
+   SMTP_PASS=your_mailbox_password
+   SMTP_PORT=587
+   SMTP_FROM_EMAIL=noreply@stanthonyadoration.com
+   SMTP_FROM_NAME=St. Anthony Adoration
+   ```
+5. Test by sending a bulk email from the admin panel (Email → Compose) to a
+   small group and confirming it arrives
+
+---
+
+## Step 9 — Run Migration 008 (Phase 6)
+
+The `sent_reminders` table is needed by the cron scripts for dedup.
+
+1. In cPanel, go to **phpMyAdmin**
+2. Select your database
+3. Click the **SQL** tab
+4. Open `backend/migrations/008_phase6_reminders.sql` from this repo
+5. Copy the entire SQL content, paste it into phpMyAdmin, click **Go**
+6. You should now see a `sent_reminders` table in the left sidebar
+
+---
+
+## Step 10 — Configure Cron Jobs (Phase 6)
+
+The automated reminder emails run as PHP cron scripts invoked by the cPanel
+cron scheduler. Two jobs are needed:
+
+### 10.1 Pre-Adoration Hour Reminder (every 15 minutes)
+
+Sends a reminder email to adorers whose scheduled hour starts within the next
+60 minutes. Running every 15 minutes gives each hour up to 4 chances to send,
+with the `sent_reminders` table preventing duplicates.
+
+1. In cPanel, go to **Cron Jobs**
+2. Click **Add New Cron Job**
+3. Set the schedule to **every 15 minutes**:
+   - Minute: `*/15`
+   - Hour: `*`
+   - Day: `*`
+   - Month: `*`
+   - Weekday: `*`
+4. Command:
+   ```
+   /usr/local/bin/php /home/USERNAME/public_html/staging/api/cron/hour_reminder.php
+   ```
+   Replace `USERNAME` with your cPanel account username, and verify the PHP
+   path with `which php` in cPanel Terminal if unsure.
+5. Click **Add New Cron Job**
+
+### 10.2 Missed Attendance Notification (daily at 00:30)
+
+Runs shortly after midnight to notify adorers who missed their scheduled
+hour(s) yesterday. One email per adorer listing all missed hours.
+
+1. Click **Add New Cron Job**
+2. Set the schedule to **daily at 00:30**:
+   - Minute: `30`
+   - Hour: `0`
+   - Day: `*`
+   - Month: `*`
+   - Weekday: `*`
+3. Command:
+   ```
+   /usr/local/bin/php /home/USERNAME/public_html/staging/api/cron/missed_notification.php
+   ```
+4. Click **Add New Cron Job**
+
+### 10.3 Test the Cron Scripts Manually
+
+Before relying on the scheduler, run each script once by hand to confirm it
+executes without errors. Use cPanel **Terminal** (or SSH if available):
+
+```bash
+php /home/USERNAME/public_html/staging/api/cron/hour_reminder.php
+php /home/USERNAME/public_html/staging/api/cron/missed_notification.php
+```
+
+You should see a one-line summary like:
+```
+hour_reminder: sent=0 skipped=0 failed=0 window=09:55-10:55 day=Friday
+missed_notification: sent=0 skipped=0 failed=0 date=2026-09-03 candidates=0
+```
+
+If you see `SMTP not configured — skipping`, return to Step 8 and fill in the
+SMTP credentials in `.env`.
+
+---
+
 ## Troubleshooting
 
 ### Testing before DNS propagates
