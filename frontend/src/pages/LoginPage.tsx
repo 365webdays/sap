@@ -65,6 +65,7 @@ export default function LoginPage() {
             <Input
               id="email"
               type="email"
+              autoFocus
               autoComplete="email"
               value={email}
               onChange={(e) => {

@@ -25,5 +25,24 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color-scheme: light dark;
+  }
+}
+
+/* Dark mode — auto-switches based on the user's OS/browser preference.
+   Adoration is 24/7, so a 3 AM adorer shouldn't be blinded by a white
+   screen. The parish green accent works on dark backgrounds; we use a
+   slightly brighter shade for the accent to maintain contrast. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-accent: #7bb30f;
+    --color-accent-foreground: #ffffff;
+    --color-accent-dark: #8fce1a;
+
+    --color-bg: #1a1a1a;
+    --color-surface: #252525;
+    --color-text: #e8e8e8;
+    --color-muted: #9a93a8;
+    --color-border: #383838;
   }
 }
