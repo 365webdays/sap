@@ -53,10 +53,15 @@ class AdminQuery
 
         $search = trim((string) ($filters['search'] ?? ''));
         if ($search !== '') {
-            $where[] = '(u.full_name LIKE :search OR u.email LIKE :search OR u.mobile_number LIKE :search)';
+            // Native prepared statements (EMULATE_PREPARES = false) do not
+            // allow a named param to be reused, so each LIKE gets its own.
+            $where[] = '(u.full_name LIKE :search_name OR u.email LIKE :search_email OR u.mobile_number LIKE :search_mobile)';
             // Escape LIKE wildcards so a literal % typed in the box does not
             // silently match everything.
-            $params['search'] = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
+            $escaped = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
+            $params['search_name'] = $escaped;
+            $params['search_email'] = $escaped;
+            $params['search_mobile'] = $escaped;
         }
 
         $status = (string) ($filters['status'] ?? '');
@@ -189,8 +194,10 @@ class AdminQuery
 
         $search = trim((string) ($filters['search'] ?? ''));
         if ($search !== '') {
-            $where[] = '(u.full_name LIKE :search OR u.email LIKE :search)';
-            $params['search'] = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
+            $where[] = '(u.full_name LIKE :search_name OR u.email LIKE :search_email)';
+            $escaped = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
+            $params['search_name'] = $escaped;
+            $params['search_email'] = $escaped;
         }
 
         $method = (string) ($filters['method'] ?? '');
