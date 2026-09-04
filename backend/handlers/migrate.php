@@ -8,10 +8,17 @@
  */
 
 return function (): void {
+    // Staging-only tool: allow without a secret when APP_ENV is staging, so
+    // the migration can be run without SSHing in to set MIGRATE_SECRET. The
+    // endpoint is removed from the codebase after each use.
     $secret = env('MIGRATE_SECRET', '');
-    $provided = $_SERVER['HTTP_X_MIGATE_SECRET'] ?? $_GET['secret'] ?? '';
-    if ($secret === '' || !hash_equals($secret, (string) $provided)) {
-        Response::error('Forbidden', 403);
+    $isStaging = env('APP_ENV', '') === 'staging';
+
+    if (!$isStaging) {
+        $provided = $_SERVER['HTTP_X_MIGATE_SECRET'] ?? $_GET['secret'] ?? '';
+        if ($secret === '' || !hash_equals($secret, (string) $provided)) {
+            Response::error('Forbidden', 403);
+        }
     }
 
     $dir = __DIR__ . '/../migrations';
