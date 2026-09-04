@@ -26,7 +26,7 @@ function detectPlatform(): Platform {
   if (/iPhone|iPad|iPod/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS/.test(ua)) {
     return "ios";
   }
-  // Android and other browsers that support beforeinstallprompt.
+  // Android and other browsers.
   return "android";
 }
 
@@ -44,15 +44,12 @@ function dismiss() {
 /**
  * Install prompt for adding the app to the home screen.
  *
- * - Android (Chrome/Edge/Samsung): captures beforeinstallprompt and offers
- *   a one-tap native install button.
- * - iPhone (Safari): shows instructions to use Share → Add to Home Screen,
- *   since Apple doesn't support programmatic install.
+ * - Android: shows immediately. If beforeinstallprompt fires, offers a
+ *   one-tap install button. If it doesn't, shows manual instructions
+ *   (Add to Home Screen via browser menu).
+ * - iPhone (Safari): shows instructions to use Share → Add to Home Screen.
  * - Already installed: renders nothing.
  * - Dismissed: hidden for 7 days (except when `force` is true).
- *
- * Place on the home page, login, register, and preferences. Use `force`
- * on preferences so users can always find the install option there.
  */
 export default function InstallPrompt({ force = false }: { force?: boolean }) {
   const [platform, setPlatform] = useState<Platform>("none");
@@ -65,20 +62,18 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
 
     if (detected === "none") return;
 
-    if (detected === "ios") {
-      setVisible(force || !wasRecentlyDismissed());
-      return;
-    }
+    // Show immediately on both platforms — don't wait for any event.
+    setVisible(force || !wasRecentlyDismissed());
 
-    // Android: wait for beforeinstallprompt before showing.
-    const handler = (e: Event) => {
-      e.preventDefault();
-      const evt = e as BeforeInstallPromptEvent;
-      setDeferredPrompt(evt);
-      setVisible(force || !wasRecentlyDismissed());
-    };
-    window.addEventListener("beforeinstallprompt", handler);
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    // Android: listen for beforeinstallprompt to enable one-tap install.
+    if (detected === "android") {
+      const handler = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e as BeforeInstallPromptEvent);
+      };
+      window.addEventListener("beforeinstallprompt", handler);
+      return () => window.removeEventListener("beforeinstallprompt", handler);
+    }
   }, [force]);
 
   const handleInstall = async () => {
@@ -126,28 +121,52 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
     );
   }
 
-  // Android: one-tap install button.
+  // Android with beforeinstallprompt: one-tap install button.
+  if (platform === "android" && deferredPrompt) {
+    return (
+      <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-4">
+        <Download className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-text">Install the app</p>
+          <p className="mt-0.5 text-sm text-muted">Add to your home screen for quick access.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button size="sm" onClick={handleInstall}>
+            Install
+          </Button>
+          {!force && (
+            <button
+              onClick={handleDismiss}
+              aria-label="Dismiss"
+              className="shrink-0 rounded p-1 text-muted hover:text-text"
+            >
+              <X className="h-4 w-4" aria-hidden="true" />
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Android without beforeinstallprompt: manual instructions fallback.
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-4">
-      <Download className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+    <div className="flex items-start gap-3 rounded-lg border border-border bg-surface p-4">
+      <Download className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
       <div className="flex-1">
-        <p className="text-sm font-medium text-text">Install the app</p>
-        <p className="mt-0.5 text-sm text-muted">Add to your home screen for quick access.</p>
+        <p className="text-sm font-medium text-text">Add to your home screen</p>
+        <p className="mt-1 text-sm text-muted">
+          Tap the browser menu (three dots), then tap <span className="font-medium">"Add to Home screen"</span>.
+        </p>
       </div>
-      <div className="flex items-center gap-2">
-        <Button size="sm" onClick={handleInstall}>
-          Install
-        </Button>
-        {!force && (
-          <button
-            onClick={handleDismiss}
-            aria-label="Dismiss"
-            className="shrink-0 rounded p-1 text-muted hover:text-text"
-          >
-            <X className="h-4 w-4" aria-hidden="true" />
-          </button>
-        )}
-      </div>
+      {!force && (
+        <button
+          onClick={handleDismiss}
+          aria-label="Dismiss"
+          className="shrink-0 rounded p-1 text-muted hover:text-text"
+        >
+          <X className="h-4 w-4" aria-hidden="true" />
+        </button>
+      )}
     </div>
   );
 }
