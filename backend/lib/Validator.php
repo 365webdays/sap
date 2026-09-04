@@ -40,6 +40,24 @@ class Validator
         return $this->data[$field] ?? null;
     }
 
+    /**
+     * The decoded body as-is.
+     *
+     * Needed for partial updates, where "key absent" and "key set to null"
+     * must be told apart so an omitted field is left untouched.
+     *
+     * @return array<string, mixed>
+     */
+    public function all(): array
+    {
+        return $this->data;
+    }
+
+    public function has(string $field): bool
+    {
+        return array_key_exists($field, $this->data);
+    }
+
     private function fail(string $field, string $message): void
     {
         // Keep the first message per field — it is the most specific.

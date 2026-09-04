@@ -34,6 +34,11 @@ require_once __DIR__ . '/lib/Attendance.php';
 require_once __DIR__ . '/lib/Preferences.php';
 require_once __DIR__ . '/lib/Mailer.php';
 require_once __DIR__ . '/lib/EmailTemplate.php';
+require_once __DIR__ . '/lib/Csv.php';
+require_once __DIR__ . '/lib/AdminStats.php';
+require_once __DIR__ . '/lib/AdminQuery.php';
+require_once __DIR__ . '/lib/MissedAttendance.php';
+require_once __DIR__ . '/lib/BulkMail.php';
 
 // All date logic (check-in day/hour matching, reminders) must run in parish
 // local time, not the server's UTC. Set this before anything touches dates.
@@ -94,7 +99,24 @@ $router->get('/adorer/attendance', require __DIR__ . '/handlers/adorer/attendanc
 $router->get('/adorer/preferences', require __DIR__ . '/handlers/adorer/preferences_get.php');
 $router->put('/adorer/preferences', require __DIR__ . '/handlers/adorer/preferences_update.php');
 
+// --- Admin features ---
+$router->get('/admin/stats', require __DIR__ . '/handlers/admin/stats.php');
+$router->get('/admin/adorers', require __DIR__ . '/handlers/admin/adorers.php');
+$router->get('/admin/adorer', require __DIR__ . '/handlers/admin/adorer_get.php');
+$router->put('/admin/adorer', require __DIR__ . '/handlers/admin/adorer_update.php');
+$router->get('/admin/attendance', require __DIR__ . '/handlers/admin/attendance.php');
+$router->get('/admin/missed', require __DIR__ . '/handlers/admin/missed.php');
+$router->post('/admin/missed/followup', require __DIR__ . '/handlers/admin/missed_followup.php');
+$router->get('/admin/coverage', require __DIR__ . '/handlers/admin/coverage.php');
+$router->get('/admin/export', require __DIR__ . '/handlers/admin/export.php');
+$router->post('/admin/email/preview', require __DIR__ . '/handlers/admin/email_preview.php');
+$router->post('/admin/email/send', require __DIR__ . '/handlers/admin/email_send.php');
+$router->get('/admin/email/history', require __DIR__ . '/handlers/admin/email_history.php');
+
+// TEMPORARY migration runner — removed after each use.
+$router->post('/migrate', require __DIR__ . '/handlers/migrate.php');
+
 // Future routes will be registered here as features are built:
-//   Admin:       /admin/dashboard, /admin/adorers, /admin/attendance, ...
+//   Phase 6:    /cron/...
 
 $router->dispatch();

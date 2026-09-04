@@ -10,6 +10,13 @@ import AttendancePage from "@/pages/AttendancePage";
 import PreferencesPage from "@/pages/PreferencesPage";
 import CheckinPage from "@/pages/CheckinPage";
 import AdminDashboard from "@/pages/AdminDashboard";
+import AdorerRoster from "@/pages/admin/AdorerRoster";
+import AdorerDetail from "@/pages/admin/AdorerDetail";
+import AttendanceRecords from "@/pages/admin/AttendanceRecords";
+import MissedAttendancePage from "@/pages/admin/MissedAttendance";
+import CoveragePage from "@/pages/admin/Coverage";
+import EmailCompose from "@/pages/admin/EmailCompose";
+import EmailHistory from "@/pages/admin/EmailHistory";
 
 /**
  * Redirect an already-signed-in adorer away from the public landing page to
@@ -81,6 +88,62 @@ function AppRoutes() {
         element={
           <ProtectedRoute role="admin">
             <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/adorers"
+        element={
+          <ProtectedRoute role="admin">
+            <AdorerRoster />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/adorers/:id"
+        element={
+          <ProtectedRoute role="admin">
+            <AdorerDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/attendance"
+        element={
+          <ProtectedRoute role="admin">
+            <AttendanceRecords />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/missed"
+        element={
+          <ProtectedRoute role="admin">
+            <MissedAttendancePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/coverage"
+        element={
+          <ProtectedRoute role="admin">
+            <CoveragePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/email"
+        element={
+          <ProtectedRoute role="admin">
+            <EmailCompose />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/email/history"
+        element={
+          <ProtectedRoute role="admin">
+            <EmailHistory />
           </ProtectedRoute>
         }
       />

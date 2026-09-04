@@ -10,7 +10,8 @@ Run these files in numeric order via phpMyAdmin (cPanel → phpMyAdmin → selec
 4. `004_create_email_preferences.sql`
 5. `005_create_admins.sql`
 6. `006_create_email_logs.sql`
-7. `seed.sql` — inserts test data (1 admin, 5 adorers with schedules)
+7. `007_phase5_admin.sql` — missed_followups table, email_logs delivery counts, report indexes
+8. `seed.sql` — inserts test data (1 admin, 5 adorers with schedules)
 
 ## Test Credentials (after seeding)
 
