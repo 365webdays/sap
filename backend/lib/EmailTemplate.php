@@ -122,4 +122,35 @@ HTML;
             'text' => $textBody,
         ];
     }
+
+    /**
+     * Bulk announcement sent by an administrator.
+     *
+     * @return array{subject:string, html:string, text:string}
+     */
+    public static function announcement(string $subject, string $bodyHtml): array
+    {
+        // The body arrives as HTML from the admin's compose form; escape only
+        // the subject (used in the heading) and let the body through as-is so
+        // the admin's formatting is preserved.
+        $heading = self::e($subject);
+        $accent = self::ACCENT;
+        $text = self::TEXT;
+        $muted = self::MUTED;
+        $border = self::BORDER;
+
+        $inner = <<<HTML
+<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:{$text};">
+  {$bodyHtml}
+</p>
+HTML;
+
+        $textBody = trim(html_entity_decode(strip_tags($bodyHtml), ENT_QUOTES, 'UTF-8'));
+
+        return [
+            'subject' => $subject,
+            'html' => self::layout($heading, $inner),
+            'text' => $textBody,
+        ];
+    }
 }
