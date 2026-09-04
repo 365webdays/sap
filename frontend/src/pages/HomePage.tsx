@@ -8,11 +8,15 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       <header className="mb-8 flex flex-col items-center text-center">
-        <Logo size={128} className="mb-4" />
-        <h1 className="text-3xl font-light text-accent">St. Anthony Adoration</h1>
+        <div className="relative mb-4">
+          <div className="absolute inset-0 -z-10 rounded-full bg-accent/10 blur-2xl" aria-hidden="true" />
+          <Logo size={128} />
+        </div>
+        <h1 className="font-serif text-3xl font-medium text-accent">St. Anthony Adoration</h1>
         <p className="mt-1 text-muted">Chapel Registration &amp; Attendance</p>
       </header>
 
+      <div className="animate-fade-in">
       <Card>
         <CardHeader>
           <CardTitle>Perpetual Adoration Chapel</CardTitle>
@@ -39,6 +43,7 @@ export default function HomePage() {
 
       <div className="mt-6">
         <InstallPrompt />
+      </div>
       </div>
     </div>
   );

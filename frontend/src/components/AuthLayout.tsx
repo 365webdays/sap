@@ -17,13 +17,18 @@ export default function AuthLayout({
   return (
     <div className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4 py-8">
       <header className="mb-6 flex flex-col items-center text-center">
-        <Logo size={128} className="mb-4" />
-        <h1 className="text-2xl font-light text-accent">St. Anthony Adoration</h1>
+        <div className="relative mb-4">
+          <div className="absolute inset-0 -z-10 rounded-full bg-accent/10 blur-2xl" aria-hidden="true" />
+          <Logo size={128} />
+        </div>
+        <h1 className="font-serif text-2xl font-medium text-accent">St. Anthony Adoration</h1>
         <p className="mt-1 text-sm text-muted">Chapel Registration &amp; Attendance</p>
       </header>
-      <h2 className="mb-1 text-xl font-medium text-text">{title}</h2>
-      {subtitle && <p className="mb-4 text-sm text-muted">{subtitle}</p>}
-      <div className="mt-2">{children}</div>
+      <div className="animate-fade-in">
+        <h2 className="mb-1 text-xl font-medium text-text">{title}</h2>
+        {subtitle && <p className="mb-4 text-sm text-muted">{subtitle}</p>}
+        <div className="mt-2">{children}</div>
+      </div>
     </div>
   );
 }

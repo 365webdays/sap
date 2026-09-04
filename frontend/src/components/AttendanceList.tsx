@@ -1,4 +1,4 @@
-import { QrCode, CalendarCheck } from "lucide-react";
+import { QrCode, CalendarCheck, CalendarX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { AttendanceEntry } from "@/api/adorer";
 
@@ -14,7 +14,12 @@ export default function AttendanceList({
   emptyMessage?: string;
 }) {
   if (entries.length === 0) {
-    return <p className="text-sm text-muted">{emptyMessage}</p>;
+    return (
+      <div className="flex flex-col items-center py-6 text-center">
+        <CalendarX className="mb-2 h-8 w-8 text-accent/40" aria-hidden="true" />
+        <p className="text-sm text-muted">{emptyMessage}</p>
+      </div>
+    );
   }
 
   return (

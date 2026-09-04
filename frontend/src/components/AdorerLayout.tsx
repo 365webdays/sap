@@ -35,7 +35,7 @@ export default function AdorerLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-3">
           <Link to="/dashboard" className="flex items-center gap-3">
             <Logo size={40} />
-            <span className="text-lg font-light text-accent">St. Anthony Adoration</span>
+            <span className="font-serif text-lg font-medium text-accent">St. Anthony Adoration</span>
           </Link>
 
           <nav className="ml-auto hidden items-center gap-1 sm:flex">
@@ -70,7 +70,7 @@ export default function AdorerLayout({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-6">
+      <main className="mx-auto max-w-3xl px-4 py-6 animate-fade-in">
         {adorer && (
           <p className="mb-4 text-sm text-muted">
             Welcome, <span className="text-text">{adorer.full_name}</span>.

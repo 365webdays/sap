@@ -70,8 +70,8 @@ export default function CheckinPage() {
 
           {state.status === "done" && (
             <>
-              <div className="flex items-start gap-3 rounded-md border border-accent/30 bg-accent/5 px-4 py-3">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+              <div className="animate-scale-in flex items-start gap-3 rounded-md border border-accent/30 bg-accent/5 px-4 py-3">
+                <CheckCircle2 className="animate-check-bounce mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
                 <div>
                   <p className="font-medium text-text" aria-live="polite">
                     {state.result.message}

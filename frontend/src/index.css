@@ -7,12 +7,14 @@
   --color-accent-dark: #4d7306;
 
   --color-bg: #f7f7f5;
+  --color-bg-gradient-end: #ecebe6;
   --color-surface: #ffffff;
   --color-text: #2d2d2d;
   --color-muted: #6b6375;
   --color-border: #e5e4e7;
 
   --font-sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
   --font-mono: ui-monospace, Consolas, monospace;
 }
 
@@ -20,7 +22,8 @@
   body {
     margin: 0;
     font-family: var(--font-sans);
-    background: var(--color-bg);
+    background: linear-gradient(to bottom, var(--color-bg), var(--color-bg-gradient-end));
+    background-attachment: fixed;
     color: var(--color-text);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -40,9 +43,72 @@
     --color-accent-dark: #8fce1a;
 
     --color-bg: #1a1a1a;
+    --color-bg-gradient-end: #232323;
     --color-surface: #252525;
     --color-text: #e8e8e8;
     --color-muted: #9a93a8;
     --color-border: #383838;
   }
+}
+
+/* ---- Animations ---- */
+
+/* Subtle pulsing glow for the check-in button during the scheduled hour. */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(103, 155, 8, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(103, 155, 8, 0);
+  }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Scale + fade in — used for the QR check-in success card. */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out;
+}
+
+/* One-time bounce for the success checkmark icon. */
+@keyframes check-bounce {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animate-check-bounce {
+  animation: check-bounce 0.4s ease-out;
+}
+
+/* Page fade-in — applied to main content areas on mount. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
 }
