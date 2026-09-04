@@ -57,6 +57,17 @@ return function (): void {
     $skipped = [];
     $errors = [];
 
+    // Diagnostic: show current email_logs columns so we can reconcile drift.
+    $diag = [];
+    try {
+        $cols = $db->query("SHOW COLUMNS FROM email_logs");
+        foreach ($cols->fetchAll() as $col) {
+            $diag[] = $col['Field'] . ' ' . $col['Type'];
+        }
+    } catch (Throwable $e) {
+        $diag[] = 'error: ' . $e->getMessage();
+    }
+
     foreach ($statements as $i => $stmt) {
         try {
             $db->exec($stmt);
@@ -79,5 +90,6 @@ return function (): void {
         'applied' => $applied,
         'skipped' => $skipped,
         'errors' => $errors,
+        'email_logs_columns' => $diag,
     ]);
 };
