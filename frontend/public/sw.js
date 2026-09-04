@@ -7,7 +7,7 @@
  * network failures gracefully.
  */
 
-const CACHE_VERSION = "v1";
+const CACHE_VERSION = "v2";
 const CACHE_NAME = "stanthony-adoration-" + CACHE_VERSION;
 
 // Assets to pre-cache on install. The hashed JS/CSS filenames are captured
@@ -54,6 +54,10 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
+
+  // Only handle same-origin requests — let cross-origin (Google Fonts,
+  // etc.) go straight to the network without SW interference.
+  if (url.origin !== self.location.origin) return;
 
   // Never cache API calls — they need fresh data.
   if (url.pathname.startsWith("/api/")) return;
