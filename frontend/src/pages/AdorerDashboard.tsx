@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { CalendarCheck, Clock, Loader2 } from "lucide-react";
+import { CalendarCheck, Clock, Calendar, CalendarDays, Infinity as InfinityIcon, Loader2 } from "lucide-react";
 import AdorerLayout from "@/components/AdorerLayout";
 import AttendanceList from "@/components/AttendanceList";
 import { Alert } from "@/components/ui/alert";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { adorerApi, type AdorerDashboard as DashboardData } from "@/api/adorer";
 import { ApiRequestError } from "@/api/client";
+import { cn } from "@/lib/utils";
 
 export default function AdorerDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -100,7 +101,10 @@ export default function AdorerDashboard() {
 
           <Button
             size="lg"
-            className="w-full"
+            className={cn(
+              "w-full",
+              check_in.within_scheduled_hour && check_in.can_check_in && "animate-pulse-glow"
+            )}
             onClick={handleCheckIn}
             disabled={checkingIn || !check_in.can_check_in}
           >
@@ -136,10 +140,13 @@ export default function AdorerDashboard() {
         </CardHeader>
         <CardContent>
           {schedules.length === 0 ? (
-            <p className="text-sm text-muted">
-              No adoration hour is assigned to your account yet. Please contact the
-              parish office.
-            </p>
+            <div className="flex flex-col items-center py-4 text-center">
+              <Clock className="mb-2 h-8 w-8 text-accent/40" aria-hidden="true" />
+              <p className="text-sm text-muted">
+                No adoration hour is assigned to your account yet. Please contact the
+                parish office.
+              </p>
+            </div>
           ) : (
             <ul className="space-y-2">
               {schedules.map((s) => (
@@ -160,12 +167,13 @@ export default function AdorerDashboard() {
       {/* Totals */}
       <div className="mt-4 grid grid-cols-3 gap-3">
         {[
-          { label: "This month", value: summary.this_month },
-          { label: "This year", value: summary.this_year },
-          { label: "All time", value: summary.total },
-        ].map(({ label, value }) => (
-          <Card key={label} className="p-4 text-center">
-            <div className="text-2xl font-light text-accent">{value}</div>
+          { label: "This month", value: summary.this_month, Icon: Calendar },
+          { label: "This year", value: summary.this_year, Icon: CalendarDays },
+          { label: "All time", value: summary.total, Icon: InfinityIcon },
+        ].map(({ label, value, Icon }) => (
+          <Card key={label} className="border-t-2 border-t-accent p-4 text-center">
+            <Icon className="mx-auto mb-1 h-4 w-4 text-accent/60" aria-hidden="true" />
+            <div className="text-3xl font-light text-accent">{value}</div>
             <div className="mt-0.5 text-xs text-muted">{label}</div>
           </Card>
         ))}
