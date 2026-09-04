@@ -40,13 +40,6 @@ export default function HomePage() {
       <div className="mt-6">
         <InstallPrompt />
       </div>
-
-      <p className="mt-6 text-center text-sm text-muted">
-        Parish staff?{" "}
-        <Link to="/admin/login" className="font-medium text-accent hover:underline">
-          Administrator sign in
-        </Link>
-      </p>
     </div>
   );
 }
