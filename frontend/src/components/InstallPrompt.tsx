@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Download, Share, X } from "lucide-react";
+import { Apple, Share, Smartphone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const DISMISS_KEY = "installPromptDismissed";
@@ -100,7 +100,7 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
   if (platform === "ios") {
     return (
       <div className="flex items-start gap-3 rounded-lg border border-border bg-surface p-4">
-        <Share className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+        <Apple className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
         <div className="flex-1">
           <p className="text-sm font-medium text-text">Add to your home screen</p>
           <p className="mt-1 text-sm text-muted">
@@ -125,7 +125,7 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
   if (platform === "android" && deferredPrompt) {
     return (
       <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-4">
-        <Download className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+        <Smartphone className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
         <div className="flex-1">
           <p className="text-sm font-medium text-text">Install the app</p>
           <p className="mt-0.5 text-sm text-muted">Add to your home screen for quick access.</p>
@@ -151,7 +151,7 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
   // Android without beforeinstallprompt: manual instructions fallback.
   return (
     <div className="flex items-start gap-3 rounded-lg border border-border bg-surface p-4">
-      <Download className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
+      <Smartphone className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
       <div className="flex-1">
         <p className="text-sm font-medium text-text">Add to your home screen</p>
         <p className="mt-1 text-sm text-muted">
