@@ -56,7 +56,7 @@ class AdminQuery
             $where[] = '(u.full_name LIKE :search OR u.email LIKE :search OR u.mobile_number LIKE :search)';
             // Escape LIKE wildcards so a literal % typed in the box does not
             // silently match everything.
-            $params['search'] = '%' . addcslashes($search, '%_\\') . '%';
+            $params['search'] = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
         }
 
         $status = (string) ($filters['status'] ?? '');
@@ -190,7 +190,7 @@ class AdminQuery
         $search = trim((string) ($filters['search'] ?? ''));
         if ($search !== '') {
             $where[] = '(u.full_name LIKE :search OR u.email LIKE :search)';
-            $params['search'] = '%' . addcslashes($search, '%_\\') . '%';
+            $params['search'] = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
         }
 
         $method = (string) ($filters['method'] ?? '');
