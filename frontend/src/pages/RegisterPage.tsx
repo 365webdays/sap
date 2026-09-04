@@ -118,6 +118,7 @@ export default function RegisterPage() {
             <Label htmlFor="full_name">Full name</Label>
             <Input
               id="full_name"
+              autoFocus
               autoComplete="name"
               value={form.full_name}
               onChange={(e) => update("full_name", e.target.value)}

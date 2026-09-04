@@ -64,6 +64,7 @@ export default function AdminLoginPage() {
             <Input
               id="admin-email"
               type="email"
+              autoFocus
               autoComplete="email"
               value={email}
               onChange={(e) => {

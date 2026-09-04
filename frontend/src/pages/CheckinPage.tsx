@@ -35,6 +35,7 @@ export default function CheckinPage() {
     (async () => {
       try {
         const result = await adorerApi.checkIn("qr");
+        if (navigator.vibrate) navigator.vibrate(50);
         setState({ status: "done", result });
       } catch (err) {
         if (err instanceof ApiRequestError && err.status === 409) {
