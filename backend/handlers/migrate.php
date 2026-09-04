@@ -21,55 +21,58 @@ return function (): void {
         }
     }
 
-    $dir = __DIR__ . '/../migrations';
-    $files = glob($dir . '/*.sql');
-    sort($files);
+    // The migrations/ directory is excluded from deploy, so the SQL is
+    // inlined here for the Phase 5 migration. Each statement is tolerant of
+    // being re-run (IF NOT EXISTS, or caught "Duplicate" errors).
+    $statements = [
+        // missed_followups table
+        'CREATE TABLE IF NOT EXISTS missed_followups (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          user_id INT NOT NULL,
+          schedule_id INT NOT NULL,
+          missed_date DATE NOT NULL,
+          followed_up_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          followed_up_by_admin_id INT NULL,
+          note VARCHAR(500) NULL,
+          UNIQUE KEY uniq_missed (user_id, schedule_id, missed_date),
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (schedule_id) REFERENCES adoration_schedules(id) ON DELETE CASCADE,
+          FOREIGN KEY (followed_up_by_admin_id) REFERENCES admins(id) ON DELETE SET NULL,
+          INDEX idx_missed_date (missed_date)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci',
+
+        // email_logs delivery count columns
+        'ALTER TABLE email_logs ADD COLUMN recipient_count INT NOT NULL DEFAULT 0 AFTER recipient_group',
+        'ALTER TABLE email_logs ADD COLUMN sent_count INT NOT NULL DEFAULT 0 AFTER recipient_count',
+        'ALTER TABLE email_logs ADD COLUMN failed_count INT NOT NULL DEFAULT 0 AFTER sent_count',
+
+        // Report indexes
+        'ALTER TABLE attendance_logs ADD INDEX idx_attendance_check_in (check_in_at)',
+        'ALTER TABLE attendance_logs ADD INDEX idx_attendance_user_date (user_id, check_in_at)',
+        'ALTER TABLE adoration_schedules ADD INDEX idx_schedule_slot (day_of_week, time_slot)',
+    ];
 
     $db = Database::getConnection();
     $applied = [];
     $skipped = [];
     $errors = [];
 
-    foreach ($files as $file) {
-        $name = basename($file);
-        $sql = file_get_contents($file);
-        if ($sql === false) {
-            $errors[] = "{$name}: could not read file";
-            continue;
-        }
-
-        // Split on semicolons followed by a newline, which handles the
-        // statement-per-line style these migrations use. The migrations are
-        // written to avoid embedded semicolons in strings.
-        $statements = array_filter(
-            array_map('trim', preg_split('/;\s*\n/', $sql) ?: []),
-            fn($s) => $s !== '' && !str_starts_with($s, '--')
-        );
-
-        foreach ($statements as $stmt) {
-            // Strip leading comment lines from each statement.
-            $stmt = preg_replace('/^--[^\n]*\n/m', '', $stmt);
-            if ($stmt === null || trim($stmt) === '') {
-                continue;
-            }
-
-            try {
-                $db->exec($stmt);
-            } catch (Throwable $e) {
-                // "Already exists" errors are expected when re-running.
-                $msg = $e->getMessage();
-                if (str_contains($msg, 'Duplicate column')
-                    || str_contains($msg, 'Duplicate key')
-                    || str_contains($msg, 'already exists')
-                    || str_contains($msg, 'Duplicate entry')
-                ) {
-                    $skipped[] = "{$name}: already applied";
-                } else {
-                    $errors[] = "{$name}: {$msg}";
-                }
+    foreach ($statements as $i => $stmt) {
+        try {
+            $db->exec($stmt);
+            $applied[] = "stmt #" . ($i + 1);
+        } catch (Throwable $e) {
+            $msg = $e->getMessage();
+            if (str_contains($msg, 'Duplicate column')
+                || str_contains($msg, 'Duplicate key')
+                || str_contains($msg, 'already exists')
+                || str_contains($msg, 'Duplicate entry')
+            ) {
+                $skipped[] = "stmt #" . ($i + 1) . ": already applied";
+            } else {
+                $errors[] = "stmt #" . ($i + 1) . ": {$msg}";
             }
         }
-        $applied[] = $name;
     }
 
     Response::success([
