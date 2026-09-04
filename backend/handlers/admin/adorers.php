@@ -18,7 +18,12 @@ return function (): void {
         'slot' => (string) ($_GET['slot'] ?? ''),
     ];
 
-    $result = AdminQuery::adorers($filters, $perPage, ($page - 1) * $perPage);
+    try {
+        $result = AdminQuery::adorers($filters, $perPage, ($page - 1) * $perPage);
+    } catch (Throwable $e) {
+        error_log('admin/adorers: ' . $e->getMessage() . ' | filters: ' . json_encode($filters));
+        Response::error('Could not load adorers: ' . $e->getMessage(), 500);
+    }
     $totalPages = $result['total'] === 0 ? 1 : (int) ceil($result['total'] / $perPage);
 
     Response::success([
