@@ -9,13 +9,14 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>,
 )
 
-// Register the service worker for offline app shell caching.
-// Only in production — dev mode uses unbundled modules and hot reload,
-// which a service worker would interfere with.
-if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+// Unregister any previously-installed service worker.
+// The SW caused caching issues (stale content after deploys, Safari login
+// failures) that outweighed the offline benefit. The app needs network for
+// API calls regardless, so offline shell caching provided little value.
+if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch((err) => {
-      console.error('Service worker registration failed:', err)
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((reg) => reg.unregister())
     })
   })
 }
