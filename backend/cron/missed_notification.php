@@ -2,15 +2,21 @@
 /**
  * Cron: Missed attendance notification
  *
- * Runs once daily (shortly after midnight) to notify adorers who missed their
- * scheduled hour(s) yesterday. One email per adorer listing all their missed
- * hours for that day, sent only if they have attendance_notifications enabled.
+ * Notifies adorers who missed their scheduled hour(s) yesterday. One email per
+ * adorer listing all their missed hours for that day, sent only if they have
+ * attendance_notifications enabled.
  *
  * Running after midnight (not at end of day) ensures every hour of the
  * previous day has fully elapsed before we evaluate it.
  *
- * Schedule in cPanel (daily at 00:30):
- *   30 0 * * * /usr/local/bin/php /home/USER/public_html/staging/api/cron/missed_notification.php
+ * The cPanel cron daemon evaluates schedules in server time (UTC on GoDaddy),
+ * but this script must fire after midnight parish local time. To avoid manual
+ * DST schedule changes, the cron runs hourly year-round and the script exits
+ * early unless the current local hour is 0 (midnight). Exactly one firing per
+ * day lands in that window — automatically correct under both PDT and PST.
+ *
+ * Schedule in cPanel (hourly, on the hour):
+ *   0 * * * * /usr/local/bin/php /home/USER/public_html/staging/api/cron/missed_notification.php
  */
 
 require_once __DIR__ . '/../lib/CronBootstrap.php';
@@ -18,6 +24,15 @@ cron_bootstrap(__DIR__ . '/..');
 
 if (!Mailer::isConfigured()) {
     fwrite(STDERR, "missed_notification: SMTP not configured — skipping\n");
+    exit(0);
+}
+
+// Only send during the 00:00 Vancouver hour. The cron runs hourly in UTC;
+// this gate ensures we evaluate "yesterday" only after midnight local time,
+// regardless of DST. See docs/godaddy-staging-setup.md Step 10.2.
+$localHour = (int) (new DateTimeImmutable('now'))->format('H');
+if ($localHour !== 0) {
+    echo "missed_notification: outside local midnight window (hour={$localHour}), skipping\n";
     exit(0);
 }
 

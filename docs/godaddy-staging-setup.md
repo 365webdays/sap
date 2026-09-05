@@ -232,15 +232,23 @@ with the `sent_reminders` table preventing duplicates.
    path with `which php` in cPanel Terminal if unsure.
 5. Click **Add New Cron Job**
 
-### 10.2 Missed Attendance Notification (daily at 00:30)
+### 10.2 Missed Attendance Notification (hourly)
 
-Runs shortly after midnight to notify adorers who missed their scheduled
-hour(s) yesterday. One email per adorer listing all missed hours.
+Notifies adorers who missed their scheduled hour(s) yesterday. One email per
+adorer listing all missed hours.
+
+The cPanel cron daemon evaluates schedules in server time (UTC on GoDaddy),
+but the script needs to fire after midnight **parish local time**
+(`APP_TIMEZONE`, e.g. `America/Vancouver`). To avoid manual DST schedule
+changes twice a year, the cron runs hourly year-round and the script itself
+exits early unless the current local hour is 0 (midnight). Exactly one firing
+per day will land in that window — automatically correct under both PDT
+(UTC-7, fires at 07:00 UTC) and PST (UTC-8, fires at 08:00 UTC).
 
 1. Click **Add New Cron Job**
-2. Set the schedule to **daily at 00:30**:
-   - Minute: `30`
-   - Hour: `0`
+2. Set the schedule to **every hour, on the hour**:
+   - Minute: `0`
+   - Hour: `*`
    - Day: `*`
    - Month: `*`
    - Weekday: `*`
@@ -263,8 +271,14 @@ php /home/USERNAME/public_html/staging/api/cron/missed_notification.php
 You should see a one-line summary like:
 ```
 hour_reminder: sent=0 skipped=0 failed=0 window=09:55-10:55 day=Friday
-missed_notification: sent=0 skipped=0 failed=0 date=2026-09-03 candidates=0
+missed_notification: outside local midnight window (hour=14), skipping
 ```
+
+The missed-notification script will report `outside local midnight window`
+unless it is currently the 00:00 hour in parish local time. That is the
+expected output outside the midnight window — it confirms the guard is
+working. To verify the send path, either wait until midnight local time or
+temporarily comment out the hour guard in the script and re-run.
 
 If you see `SMTP not configured — skipping`, return to Step 8 and fill in the
 SMTP credentials in `.env`.
