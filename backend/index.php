@@ -39,6 +39,7 @@ require_once __DIR__ . '/lib/AdminStats.php';
 require_once __DIR__ . '/lib/AdminQuery.php';
 require_once __DIR__ . '/lib/MissedAttendance.php';
 require_once __DIR__ . '/lib/BulkMail.php';
+require_once __DIR__ . '/lib/RateLimiter.php';
 
 // All date logic (check-in day/hour matching, reminders) must run in parish
 // local time, not the server's UTC. Set this before anything touches dates.

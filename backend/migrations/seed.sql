@@ -1,10 +1,11 @@
 -- Seed data for development/staging
 -- Test accounts use clearly named emails for easy cleanup before go-live.
 --
--- Test adorer credentials:  email = test1@stanthonyadoration.com ... test5@stanthonyadoration.com
---                            password = password123
--- Admin credentials:        email = admin@stanthonyadoration.com
---                            password = admin123
+-- Test adorer accounts:  email = test1@stanthonyadoration.com ... test5@stanthonyadoration.com
+-- Admin account:         email = admin@stanthonyadoration.com
+--
+-- Passwords are not documented here — use the password reset flow or
+-- regenerate the bcrypt hashes if you need to know them.
 --
 -- IMPORTANT: Delete all test accounts before go-live (Phase 11.1).
 
@@ -13,7 +14,6 @@ INSERT INTO admins (name, email, password_hash) VALUES
   ('Test Admin', 'admin@stanthonyadoration.com', '$2y$10$W.RtQTZajXIcYy7x2uTDceMQFqBl3SaUZeEtjfS16a1QJ/4GscE62');
 
 -- 5 sample adorers
--- password_hash below = bcrypt hash of 'password123'
 INSERT INTO users (full_name, email, mobile_number, password_hash, email_verified_at, privacy_consent, is_active) VALUES
   ('Test User One',   'test1@stanthonyadoration.com', '555-0001', '$2y$10$VYurhR2N8RxyKNzPoj.Z.uWXSpsXC7GYvU632ojlQjID666k9cAga', NOW(), TRUE, TRUE),
   ('Test User Two',   'test2@stanthonyadoration.com', '555-0002', '$2y$10$VYurhR2N8RxyKNzPoj.Z.uWXSpsXC7GYvU632ojlQjID666k9cAga', NOW(), TRUE, TRUE),
