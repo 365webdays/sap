@@ -22,11 +22,11 @@ export default function AuthLayout({
           <Logo size={128} />
         </div>
         <h1 className="font-serif text-2xl font-medium text-accent">St. Anthony Adoration</h1>
-        <p className="mt-1 text-sm text-muted">Chapel Registration &amp; Attendance</p>
+        <p className="mt-1 text-base text-muted">Chapel Registration &amp; Attendance</p>
       </header>
       <div className="animate-fade-in">
         <h2 className="mb-1 text-xl font-medium text-text">{title}</h2>
-        {subtitle && <p className="mb-4 text-sm text-muted">{subtitle}</p>}
+        {subtitle && <p className="mb-4 text-base text-muted">{subtitle}</p>}
         <div className="mt-2">{children}</div>
       </div>
     </div>

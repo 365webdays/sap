@@ -35,14 +35,14 @@ const Switch = React.forwardRef<HTMLInputElement, SwitchProps>(
             ref={ref}
             type="checkbox"
             className={cn(
-              "peer h-6 w-11 cursor-pointer appearance-none rounded-full bg-border transition-colors checked:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+              "peer h-7 w-12 cursor-pointer appearance-none rounded-full bg-border transition-colors checked:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
               className
             )}
             {...props}
           />
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-surface shadow-sm transition-transform peer-checked:translate-x-5"
+            className="pointer-events-none absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-surface shadow-sm transition-transform peer-checked:translate-x-5"
           />
         </span>
       </label>

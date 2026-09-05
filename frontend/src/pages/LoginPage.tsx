@@ -75,8 +75,9 @@ export default function LoginPage() {
                 setFormError(null);
               }}
               aria-invalid={!!fieldErrors.email}
+              aria-describedby={fieldErrors.email ? "email-error" : undefined}
             />
-            <FieldError message={fieldErrors.email} />
+            <FieldError id="email-error" message={fieldErrors.email} />
           </div>
 
           <div className="space-y-1.5">
@@ -91,15 +92,16 @@ export default function LoginPage() {
                 setFormError(null);
               }}
               aria-invalid={!!fieldErrors.password}
+              aria-describedby={fieldErrors.password ? "password-error" : undefined}
             />
-            <FieldError message={fieldErrors.password} />
+            <FieldError id="password-error" message={fieldErrors.password} />
           </div>
 
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? "Signing in…" : "Sign in"}
           </Button>
 
-          <p className="text-center text-sm text-muted">
+          <p className="text-center text-base text-muted">
             New here?{" "}
             <Link to="/register" className="font-medium text-accent hover:underline">
               Register as an adorer
