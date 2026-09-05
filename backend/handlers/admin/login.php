@@ -15,6 +15,12 @@ return function (): void {
 
     $v->stopIfInvalid();
 
+    // Throttle brute-force attempts before doing any DB work.
+    $remaining = RateLimiter::remainingAttempts(RateLimiter::ENDPOINT_ADMIN_LOGIN);
+    if ($remaining === 0) {
+        Response::error('Too many login attempts. Please try again later.', 429);
+    }
+
     $stmt = Database::getConnection()->prepare(
         'SELECT id, name, email, password_hash FROM admins WHERE email = :email LIMIT 1'
     );
@@ -26,8 +32,15 @@ return function (): void {
     $passwordOk = password_verify($password, $hash);
 
     if ($admin === false || !$passwordOk) {
-        Response::error('Incorrect email or password', 401);
+        RateLimiter::recordFailure(RateLimiter::ENDPOINT_ADMIN_LOGIN);
+        $left = RateLimiter::remainingAttempts(RateLimiter::ENDPOINT_ADMIN_LOGIN);
+        if ($left > 0) {
+            Response::error("Incorrect email or password. {$left} attempt" . ($left === 1 ? '' : 's') . ' remaining.', 401);
+        }
+        Response::error('Too many login attempts. Please try again later.', 429);
     }
+
+    RateLimiter::clear(RateLimiter::ENDPOINT_ADMIN_LOGIN);
 
     $adminId = (int) $admin['id'];
 

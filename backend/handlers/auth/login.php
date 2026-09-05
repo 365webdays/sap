@@ -13,6 +13,12 @@ return function (): void {
 
     $v->stopIfInvalid();
 
+    // Throttle brute-force attempts before doing any DB work.
+    $remaining = RateLimiter::remainingAttempts(RateLimiter::ENDPOINT_AUTH_LOGIN);
+    if ($remaining === 0) {
+        Response::error('Too many login attempts. Please try again later.', 429);
+    }
+
     $stmt = Database::getConnection()->prepare(
         'SELECT id, full_name, email, mobile_number, password_hash, is_active
          FROM users
@@ -28,7 +34,12 @@ return function (): void {
     $passwordOk = password_verify($password, $hash);
 
     if ($user === false || !$passwordOk) {
-        Response::error('Incorrect email or password', 401);
+        RateLimiter::recordFailure(RateLimiter::ENDPOINT_AUTH_LOGIN);
+        $left = RateLimiter::remainingAttempts(RateLimiter::ENDPOINT_AUTH_LOGIN);
+        if ($left > 0) {
+            Response::error("Incorrect email or password. {$left} attempt" . ($left === 1 ? '' : 's') . ' remaining.', 401);
+        }
+        Response::error('Too many login attempts. Please try again later.', 429);
     }
 
     // Deliberately distinct from bad credentials: the password was right, but
@@ -36,6 +47,8 @@ return function (): void {
     if ((int) $user['is_active'] !== 1) {
         Response::error('This account has been deactivated. Please contact the parish office.', 403);
     }
+
+    RateLimiter::clear(RateLimiter::ENDPOINT_AUTH_LOGIN);
 
     $userId = (int) $user['id'];
 

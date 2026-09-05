@@ -11,18 +11,23 @@ Run these files in numeric order via phpMyAdmin (cPanel → phpMyAdmin → selec
 5. `005_create_admins.sql`
 6. `006_create_email_logs.sql`
 7. `007_phase5_admin.sql` — missed_followups table, email_logs delivery counts, report indexes
-8. `seed.sql` — inserts test data (1 admin, 5 adorers with schedules)
+8. `008_phase6_reminders.sql` — sent_reminders dedup table for cron emails
+9. `009_login_rate_limit.sql` — login_attempts table for brute-force protection
+10. `seed.sql` — inserts test data (1 admin, 5 adorers with schedules)
 
-## Test Credentials (after seeding)
+## Test Accounts (after seeding)
 
-| Role   | Email                              | Password       |
-|--------|------------------------------------|----------------|
-| Admin  | admin@stanthonyadoration.com       | admin123       |
-| Adorer | test1@stanthonyadoration.com       | password123    |
-| Adorer | test2@stanthonyadoration.com       | password123    |
-| Adorer | test3@stanthonyadoration.com       | password123    |
-| Adorer | test4@stanthonyadoration.com       | password123    |
-| Adorer | test5@stanthonyadoration.com       | password123    |
+| Role   | Email                              |
+|--------|------------------------------------|
+| Admin  | admin@stanthonyadoration.com       |
+| Adorer | test1@stanthonyadoration.com       |
+| Adorer | test2@stanthonyadoration.com       |
+| Adorer | test3@stanthonyadoration.com       |
+| Adorer | test4@stanthonyadoration.com       |
+| Adorer | test5@stanthonyadoration.com       |
+
+Passwords are not documented in the repo. If you need access to a test
+account, regenerate the bcrypt hash in `seed.sql` with a known password.
 
 ## Notes
 
