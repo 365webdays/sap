@@ -31,8 +31,7 @@ const PasswordInput = ({
         type="button"
         onClick={() => setVisible((v) => !v)}
         aria-label={visible ? "Hide password" : "Show password"}
-        className="absolute inset-y-0 right-0 flex items-center px-3 text-muted transition-colors hover:text-text"
-        tabIndex={-1}
+        className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-muted transition-colors hover:text-text"
       >
         {visible ? (
           <EyeOff className="h-4 w-4" aria-hidden="true" />

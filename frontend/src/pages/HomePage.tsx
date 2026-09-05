@@ -25,17 +25,17 @@ export default function HomePage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted">
+          <p className="text-base text-muted">
             St. Anthony of Padua Parish invites you to spend one hour each week
             in prayer before our Lord in the Eucharist. Register below to claim
             your hour and join our community of adorers.
           </p>
           <div className="flex flex-col gap-2 sm:flex-row">
-            <Link to="/register" className={buttonVariants({ variant: "default" })}>
-              Register as an adorer
-            </Link>
-            <Link to="/login" className={buttonVariants({ variant: "outline" })}>
+            <Link to="/login" className={buttonVariants({ variant: "default" })}>
               Sign in
+            </Link>
+            <Link to="/register" className={buttonVariants({ variant: "outline" })}>
+              Register as an adorer
             </Link>
           </div>
         </CardContent>

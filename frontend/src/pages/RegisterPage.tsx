@@ -168,7 +168,7 @@ export default function RegisterPage() {
               aria-describedby={fieldErrors.password ? "password-error" : undefined}
             />
             <FieldError id="password-error" message={fieldErrors.password} />
-            <p className="text-xs text-muted">At least 8 characters, at most 72.</p>
+            <p className="text-sm text-muted">At least 8 characters, at most 72.</p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -231,7 +231,7 @@ export default function RegisterPage() {
             {submitting ? "Registering…" : "Register"}
           </Button>
 
-          <p className="text-center text-sm text-muted">
+          <p className="text-center text-base text-muted">
             Already registered?{" "}
             <Link to="/login" className="font-medium text-accent hover:underline">
               Sign in

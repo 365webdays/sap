@@ -102,8 +102,8 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
       <div className="flex items-start gap-3 rounded-lg border border-border bg-surface p-4">
         <Apple className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
         <div className="flex-1">
-          <p className="text-sm font-medium text-text">Add to your home screen</p>
-          <p className="mt-1 text-sm text-muted">
+          <p className="text-base font-medium text-text">Add to your home screen</p>
+          <p className="mt-1 text-base text-muted">
             Tap the <Share className="inline h-3.5 w-3.5 align-text-bottom" aria-hidden="true" /> Share
             icon in Safari, then tap <span className="font-medium">"Add to Home Screen"</span>.
           </p>
@@ -112,9 +112,9 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
           <button
             onClick={handleDismiss}
             aria-label="Dismiss"
-            className="shrink-0 rounded p-1 text-muted hover:text-text"
+            className="shrink-0 rounded p-2 text-muted hover:text-text"
           >
-            <X className="h-4 w-4" aria-hidden="true" />
+            <X className="h-5 w-5" aria-hidden="true" />
           </button>
         )}
       </div>
@@ -127,8 +127,8 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
       <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-4">
         <Smartphone className="h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
         <div className="flex-1">
-          <p className="text-sm font-medium text-text">Install the app</p>
-          <p className="mt-0.5 text-sm text-muted">Add to your home screen for quick access.</p>
+          <p className="text-base font-medium text-text">Install the app</p>
+          <p className="mt-0.5 text-base text-muted">Add to your home screen for quick access.</p>
         </div>
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={handleInstall}>
@@ -138,9 +138,9 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
             <button
               onClick={handleDismiss}
               aria-label="Dismiss"
-              className="shrink-0 rounded p-1 text-muted hover:text-text"
+              className="shrink-0 rounded p-2 text-muted hover:text-text"
             >
-              <X className="h-4 w-4" aria-hidden="true" />
+              <X className="h-5 w-5" aria-hidden="true" />
             </button>
           )}
         </div>
@@ -153,8 +153,8 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
     <div className="flex items-start gap-3 rounded-lg border border-border bg-surface p-4">
       <Smartphone className="mt-0.5 h-5 w-5 shrink-0 text-accent" aria-hidden="true" />
       <div className="flex-1">
-        <p className="text-sm font-medium text-text">Add to your home screen</p>
-        <p className="mt-1 text-sm text-muted">
+        <p className="text-base font-medium text-text">Add to your home screen</p>
+        <p className="mt-1 text-base text-muted">
           Tap the browser menu (three dots), then tap <span className="font-medium">"Add to Home screen"</span>.
         </p>
       </div>
@@ -162,9 +162,9 @@ export default function InstallPrompt({ force = false }: { force?: boolean }) {
         <button
           onClick={handleDismiss}
           aria-label="Dismiss"
-          className="shrink-0 rounded p-1 text-muted hover:text-text"
+          className="shrink-0 rounded p-2 text-muted hover:text-text"
         >
-          <X className="h-4 w-4" aria-hidden="true" />
+          <X className="h-5 w-5" aria-hidden="true" />
         </button>
       )}
     </div>

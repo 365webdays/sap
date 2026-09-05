@@ -74,8 +74,9 @@ export default function AdminLoginPage() {
                 setFormError(null);
               }}
               aria-invalid={!!fieldErrors.email}
+              aria-describedby={fieldErrors.email ? "admin-email-error" : undefined}
             />
-            <FieldError message={fieldErrors.email} />
+            <FieldError id="admin-email-error" message={fieldErrors.email} />
           </div>
 
           <div className="space-y-1.5">
@@ -90,15 +91,16 @@ export default function AdminLoginPage() {
                 setFormError(null);
               }}
               aria-invalid={!!fieldErrors.password}
+              aria-describedby={fieldErrors.password ? "admin-password-error" : undefined}
             />
-            <FieldError message={fieldErrors.password} />
+            <FieldError id="admin-password-error" message={fieldErrors.password} />
           </div>
 
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? "Signing in…" : "Sign in"}
           </Button>
 
-          <p className="text-center text-sm text-muted">
+          <p className="text-center text-base text-muted">
             Not an administrator?{" "}
             <Link to="/login" className="font-medium text-accent hover:underline">
               Adorer sign in
