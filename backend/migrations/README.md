@@ -14,6 +14,7 @@ Run these files in numeric order via phpMyAdmin (cPanel → phpMyAdmin → selec
 8. `008_phase6_reminders.sql` — sent_reminders dedup table for cron emails
 9. `009_login_rate_limit.sql` — login_attempts table for brute-force protection
 10. `seed.sql` — inserts test data (1 admin, 5 adorers with schedules)
+11. `010_add_admin_janet.sql` — replaces the seed test admin with the official parish admin account
 
 ## Test Accounts (after seeding)
 
@@ -28,6 +29,16 @@ Run these files in numeric order via phpMyAdmin (cPanel → phpMyAdmin → selec
 
 Passwords are not documented in the repo. If you need access to a test
 account, regenerate the bcrypt hash in `seed.sql` with a known password.
+
+## Official Admin Account (after migration 010)
+
+| Role  | Name          | Email                 |
+|-------|---------------|-----------------------|
+| Admin | Janet Laguio  | bonetp168@gmail.com   |
+
+Migration 010 deletes the seed test admin (`admin@stanthonyadoration.com`)
+and inserts the official parish admin above. The password is not stored in
+the repo — only the bcrypt hash is.
 
 ## Notes
 
