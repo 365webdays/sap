@@ -11,13 +11,21 @@ and fill in a form, you can do this.
 
 ## Your Test Account
 
-| Role   | Email                | Notes                        |
-|--------|----------------------|------------------------------|
-| Admin  | bonetp168@gmail.com  | Password provided separately |
+| Role   | Email                | Sign-in page                                    | Notes                        |
+|--------|----------------------|-------------------------------------------------|------------------------------|
+| Admin  | bonetp168@gmail.com  | https://stanthonyadoration.com/admin/login      | Password provided separately |
+
+The admin sign-in page is not linked from the home page — type the address
+above directly.
 
 For testing the adorer side of the app, you'll create your own adorer account
 in Section 2 below. Use your own email address so you can receive the welcome
 email and test the notification features.
+
+> **This is the live system.** Any adorer you register is a real record. Use
+> your own name and email so the admin can find and deactivate it afterwards.
+> You will also see five placeholder adorers named "Test User One" through
+> "Test User Five" in the admin lists — ignore them.
 
 ---
 
@@ -191,7 +199,7 @@ email and test the notification features.
 ### Exporting
 - [ ] You can download the attendance records as a spreadsheet (CSV)
 - [ ] The downloaded file only contains the records matching your filters (not everything)
-- [ ] The columns in the file are correct (date, time, name, method)
+- [ ] The columns in the file are: Timestamp, Date, Time, Name, Email, Method, Scheduled Hour
 
 ---
 
@@ -222,11 +230,13 @@ email and test the notification features.
 - [ ] Slots with no assigned adorer are clearly marked (so you can see where coverage is missing)
 - [ ] The layout is easy to read on both phone and computer
 
-### Assigning Adorers
-- [ ] You can assign an adorer to a time slot
-- [ ] You can move an adorer to a different slot
-- [ ] The change shows up immediately in the coverage view
-- [ ] The change also shows up on the adorer's profile
+### Filling a Gap
+The coverage view is read-only. To fill a gap, change the adorer's schedule
+from their profile (Section 9 → Editing an Adorer).
+- [ ] Pick an empty slot in the coverage view and note the day and time
+- [ ] Open an adorer's profile and change their assigned day/time to that slot
+- [ ] Go back to the coverage view — the adorer now appears in that slot and the old slot updates
+- [ ] The adorer's profile shows the new schedule
 
 ---
 
@@ -245,8 +255,8 @@ email and test the notification features.
 
 ### Email History
 - [ ] The history page lists all previously sent emails
-- [ ] Each entry shows the subject, who it was sent to, and when
-- [ ] Clicking an entry shows the full message
+- [ ] Each entry shows the subject, which group it went to, when, and who sent it
+- [ ] Each entry shows how many emails were sent (e.g. "2 / 2 sent") and flags any failures
 
 ---
 
@@ -273,8 +283,9 @@ email and test the notification features.
 
 ## 16. Automated Reminder Emails
 
-> These are automatic emails sent by the system. They need the email settings
-> to be configured on the server first.
+> These are automatic emails sent by the system on a schedule. They only run
+> once the two scheduled tasks (cron jobs) have been set up on the server —
+> check with the developer before testing this section.
 
 ### Pre-Adoration Reminder
 - [ ] An adorer who has "Hour Reminders" turned ON and has a scheduled hour coming up receives a reminder email
@@ -364,7 +375,6 @@ email and test the notification features.
 - [ ] On iPhone, you can add it using Share → Add to Home Screen
 - [ ] Once installed, it opens full-screen (no browser address bar)
 - [ ] The app icon appears on your home screen
-- [ ] When you open it with no internet, you still see something meaningful (not a blank page or error)
 
 ---
 
