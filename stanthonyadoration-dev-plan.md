@@ -348,20 +348,22 @@ This is a **mobile-first application** — the primary experience is designed fo
 
 Because staging and production share the same database, go-live is straightforward — there is no data migration, no DB export/import, and no seed data step. It is essentially a file copy and a URL swap.
 
+> Step-by-step cutover lives in `docs/go-live-runbook.md`.
+
 ### 11.1 Pre-Launch Cleanup
 - [ ] Final client sign-off on staging
-- [ ] Delete all test accounts from the shared database (e.g. any `test@...` or dummy adorer records created during development)
-- [ ] Verify the admin account(s) intended for production are in place and passwords are set
+- [x] ~~Delete all test accounts~~ — decision at go-live: keep `test1–5@` accounts (deactivate via admin UI; see runbook post-launch notes)
+- [x] Verify the admin account(s) intended for production are in place and passwords are set (migration 010)
 
 ### 11.2 Frontend Build & Deploy
-- [ ] Update the production `.env`: set `VITE_API_BASE_URL=https://stanthonyadoration.com/api`
-- [ ] Run `npm run build` to generate the production `/dist`
-- [ ] Copy `/dist` contents to GoDaddy `public_html` root (not the `/staging` subfolder used during development)
+- [x] CI builds with `VITE_API_BASE_URL=https://stanthonyadoration.com/api` (`deploy-production.yml`)
+- [x] CI syncs the build to `public_html/` on every push to `main`
+- [ ] Root DNS `@`/`www` repointed from Website Builder (`13.248.243.5`) to hosting (`107.180.114.51`)
 
 ### 11.3 Backend Deploy
-- [ ] Copy PHP backend files from the `/staging` folder to the production root path
-- [ ] Update the production `.env` on the server: set `APP_ENV=production` and `APP_BASE_URL=https://stanthonyadoration.com`
-- [ ] Verify `.htaccess` routing rules work correctly at the root domain
+- [x] CI deploys the PHP API to `public_html/api/`
+- [ ] Create `public_html/api/.env` with `APP_ENV=production` and `APP_BASE_URL=https://stanthonyadoration.com`
+- [ ] Verify `.htaccess` routing rules work correctly at the root domain (`www` → bare domain redirect added)
 
 ### 11.4 Cron Jobs
 - [ ] Update cron job paths in GoDaddy cPanel from staging script paths to production script paths

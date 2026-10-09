@@ -1,11 +1,11 @@
-name: Deploy to Staging
+name: Deploy to Production
 
 on:
   push:
     branches: [main]
 
 concurrency:
-  group: deploy-staging
+  group: deploy-production
   cancel-in-progress: false
 
 jobs:
@@ -57,7 +57,7 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         env:
-          VITE_API_BASE_URL: https://staging.stanthonyadoration.com/api
+          VITE_API_BASE_URL: https://stanthonyadoration.com/api
         run: npm run build
 
       - name: Assemble deploy directory
@@ -88,7 +88,7 @@ jobs:
           find deploy -type f -not -path 'deploy/api/vendor/*' | sort
           echo "--- vendor file count: $(find deploy/api/vendor -type f | wc -l) ---"
 
-      - name: Deploy to staging over FTPS
+      - name: Deploy to production over FTPS
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -97,29 +97,32 @@ jobs:
           protocol: ftps
           port: 21
           local-dir: ./deploy/
-          server-dir: ./public_html/staging/
+          server-dir: ./public_html/
           # The server's .env holds real credentials and lives only on the host.
           # Excluding it keeps the sync from uploading or deleting it.
+          # Never enable dangerous-clean-slate here: public_html/ also holds
+          # cPanel-managed entries (cgi-bin, etc.) that are not in this repo.
           exclude: |
             **/.env
             **/.git*
             **/.git*/**
 
       - name: Verify health endpoint
-        # -k skips cert validation because the staging subdomain uses a
-        # self-signed cert (AutoSSL is not available on this hosting plan).
-        # Safe to remove once a real cert is installed.
+        # Production uses a real certificate, so TLS is validated. The check
+        # also asserts the environment so a deploy that lands on a host still
+        # reading a staging .env is caught here.
         run: |
           set -euo pipefail
           for i in 1 2 3 4 5; do
-            body=$(curl -fsS -k --max-time 20 \
-              "https://staging.stanthonyadoration.com/api/health" || true)
+            body=$(curl -fsS --max-time 20 \
+              "https://stanthonyadoration.com/api/health" || true)
             echo "attempt $i: $body"
-            if echo "$body" | grep -q '"database":true'; then
+            if echo "$body" | grep -q '"database":true' \
+              && echo "$body" | grep -q '"environment":"production"'; then
               echo "Health check passed."
               exit 0
             fi
             sleep 10
           done
-          echo "Health check did not report a healthy database." >&2
+          echo "Health check did not report a healthy production database." >&2
           exit 1

@@ -16,7 +16,7 @@
  * day lands in that window — automatically correct under both PDT and PST.
  *
  * Schedule in cPanel (hourly, on the hour):
- *   0 * * * * /usr/local/bin/php /home/USER/public_html/staging/api/cron/missed_notification.php
+ *   0 * * * * /usr/local/bin/php /home/USER/public_html/api/cron/missed_notification.php
  */
 
 require_once __DIR__ . '/../lib/CronBootstrap.php';
@@ -29,7 +29,7 @@ if (!Mailer::isConfigured()) {
 
 // Only send during the 00:00 Vancouver hour. The cron runs hourly in UTC;
 // this gate ensures we evaluate "yesterday" only after midnight local time,
-// regardless of DST. See docs/godaddy-staging-setup.md Step 10.2.
+// regardless of DST. See docs/go-live-runbook.md (cron jobs).
 $localHour = (int) (new DateTimeImmutable('now'))->format('H');
 if ($localHour !== 0) {
     echo "missed_notification: outside local midnight window (hour={$localHour}), skipping\n";

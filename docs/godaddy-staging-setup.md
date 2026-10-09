@@ -1,5 +1,12 @@
 # GoDaddy Staging Setup Guide
 
+> **Staging has been retired.** Production now deploys to `public_html/` and
+> is served at `https://stanthonyadoration.com`; see `docs/go-live-runbook.md`
+> for the cutover and current cron paths. This guide is kept as the reference
+> for first-time cPanel setup (database, `.env`, SMTP, cron). Where it says
+> `public_html/staging/` read `public_html/`, and where it says
+> `staging.stanthonyadoration.com` read `stanthonyadoration.com`.
+
 This guide walks you through setting up the blank GoDaddy hosting account for the St. Anthony Adoration app. You only need to do this once.
 
 ## Prerequisites

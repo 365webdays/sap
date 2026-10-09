@@ -8,10 +8,10 @@
  * so multiple runs in the same window don't send twice.
  *
  * Schedule in cPanel (every 15 minutes):
- *   0,15,30,45 * * * * /usr/local/bin/php /home/USER/public_html/staging/api/cron/hour_reminder.php
+ *   0,15,30,45 * * * * /usr/local/bin/php /home/USER/public_html/api/cron/hour_reminder.php
  *
  * Or hourly:
- *   0 * * * * /usr/local/bin/php /home/USER/public_html/staging/api/cron/hour_reminder.php
+ *   0 * * * * /usr/local/bin/php /home/USER/public_html/api/cron/hour_reminder.php
  */
 
 require_once __DIR__ . '/../lib/CronBootstrap.php';

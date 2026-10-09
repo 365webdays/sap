@@ -43,5 +43,9 @@ the repo — only the bcrypt hash is.
 ## Notes
 
 - These migration files create tables without `IF NOT EXISTS` — they will error if run twice. This is intentional to prevent accidental data loss.
-- **Delete all test accounts before go-live** (see Phase 11.1 of the dev plan).
-- Staging and production share the same database — run migrations only once.
+- The seed test adorers (`test1@…test5@`) were **intentionally kept** at
+  go-live. They show up in admin counts and coverage and will be emailed by
+  the cron jobs; deactivate them in the admin UI, or remove them with
+  `DELETE FROM users WHERE email LIKE 'test%@stanthonyadoration.com'` — every
+  related table cascades on `user_id`.
+- There is a single database shared by every environment — run migrations only once.

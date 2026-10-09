@@ -54,9 +54,9 @@ set_exception_handler(function (Throwable $e): void {
     Response::error('An unexpected error occurred', 500);
 });
 
-// CORS headers — allow staging, production, and localhost origins
+// CORS headers — allow production and localhost origins. The SPA and API are
+// same-origin in production; this only matters for local Vite dev servers.
 $allowedOrigins = [
-    'https://staging.stanthonyadoration.com',
     'https://stanthonyadoration.com',
     'http://localhost:5173',
     'http://127.0.0.1:5173',

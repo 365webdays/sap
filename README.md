@@ -8,7 +8,7 @@ A Progressive Web App for managing Adoration Chapel registration and attendance 
 - **Backend:** PHP + MySQL (PDO). Composer deps (PHPMailer, firebase/php-jwt)
   are installed in CI and shipped in the deploy artifact, so the shared host
   never needs Composer itself.
-- **Hosting:** GoDaddy (staging at `staging.stanthonyadoration.com`)
+- **Hosting:** GoDaddy shared hosting, production at `https://stanthonyadoration.com`
 
 ## Project Structure
 
@@ -22,8 +22,8 @@ sap/
 │   │   ├── pages/     # Route pages
 │   │   ├── App.tsx    # Router setup
 │   │   └── index.css  # Tailwind + theme tokens
-│   ├── .env           # Local dev API URL
-│   └── .env.staging   # Staging API URL
+│   ├── .env           # Local dev API URL (gitignored)
+│   └── .env.production # Production API URL (gitignored)
 ├── backend/           # PHP API, deployed to /api
 │   ├── handlers/      # Endpoint handlers
 │   ├── lib/           # Database, Response, Router
@@ -33,7 +33,7 @@ sap/
 │   ├── index.php      # Front controller
 │   └── .htaccess      # URL rewriting + CORS + HTTPS
 ├── docs/              # Setup and deployment guides
-├── .github/workflows/ # CI: build + FTPS deploy to staging
+├── .github/workflows/ # CI: build + FTPS deploy to production
 └── stanthonyadoration-dev-plan.md  # Full development plan
 ```
 
@@ -50,10 +50,10 @@ npm install
 npm run dev      # Starts Vite dev server at http://localhost:5173
 ```
 
-The dev server reads `frontend/.env` for `VITE_API_BASE_URL`. By default it points to `http://localhost:8000/api`. To develop against the live staging backend, copy `.env.staging` to `.env`:
+The dev server reads `frontend/.env` for `VITE_API_BASE_URL`. By default it points to `http://localhost:8000/api`. To develop against the live production backend (real data — be careful), copy `.env.production` to `.env`:
 
 ```bash
-cp frontend/.env.staging frontend/.env
+cp frontend/.env.production frontend/.env
 ```
 
 ### Backend
@@ -77,19 +77,21 @@ applied manually via phpMyAdmin and are never deployed to the server.
 
 ## Deployment
 
-Pushing to `main` triggers `.github/workflows/deploy-staging.yml`, which:
+**Every push to `main` deploys to production.** `.github/workflows/deploy-production.yml`:
 
-1. Installs dependencies, lints, and builds the frontend
+1. Installs dependencies, lints, and builds the frontend with
+   `VITE_API_BASE_URL=https://stanthonyadoration.com/api`
 2. Assembles a deploy tree (SPA at root, PHP API under `api/`)
-3. Syncs it to `public_html/staging/` over FTPS
-4. Polls `/api/health` to confirm the deploy is live
+3. Syncs it to `public_html/` over FTPS
+4. Polls `https://stanthonyadoration.com/api/health` and requires
+   `database: true` and `environment: "production"`
 
 The server's `.env` and the `migrations/` directory are excluded from the sync.
 
-At go-live, change `server-dir` from `./public_html/staging/` to
-`./public_html/` and update `VITE_API_BASE_URL` — no code changes needed.
-
-See `docs/godaddy-staging-setup.md` for first-time server setup.
+- `docs/go-live-runbook.md` — the cutover steps (DNS, `.env`, cron jobs,
+  staging retirement, smoke tests, rollback)
+- `docs/godaddy-staging-setup.md` — first-time cPanel setup reference
+  (database, SMTP, cron). Staging itself has been retired.
 
 ## API Endpoints
 
