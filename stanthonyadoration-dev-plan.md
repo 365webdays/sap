@@ -1,6 +1,6 @@
 # St. Anthony of Padua Parish
 ## Adoration Chapel Registration & Attendance Web Application
-### Development Plan for Devin AI
+### Development Plan
 
 **Client:** Janet Laguio (jplaguio@gmail.com)
 **Developer:** Michael Peralta (365webdays@gmail.com)
@@ -406,7 +406,7 @@ Because staging and production share the same database, go-live is straightforwa
 
 ---
 
-## Notes for Devin AI
+## Implementation Notes
 
 - **Mobile-first UI:** design and build every screen for a phone screen first (375px base), then scale up with Tailwind breakpoints for tablet and desktop — desktop should look great, not just functional; admin views especially benefit from wider layouts and visible data density on larger screens
 - Use **React Router v6** for client-side routing
